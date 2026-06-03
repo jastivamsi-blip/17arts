@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>My Cart — 17ARTS</title>
+<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+.cart-layout{display:grid;grid-template-columns:1fr 340px;gap:20px;max-width:1100px;margin:0 auto;padding:24px 1.5rem 60px}
+.cart-header{background:#fff;border-radius:8px;padding:16px 20px;border:0.5px solid var(--border);margin-bottom:16px;display:flex;align-items:center;justify-content:space-between}
+.cart-item{background:#fff;border-radius:8px;border:0.5px solid var(--border);padding:16px;margin-bottom:10px;display:flex;gap:16px;align-items:flex-start}
+.cart-item-img{width:100px;height:100px;border-radius:8px;flex-shrink:0}
+.cart-item-info{flex:1}
+.cart-item-cat{font-size:10px;color:var(--gold);text-transform:uppercase;letter-spacing:1px;font-weight:600}
+.cart-item-title{font-size:15px;font-weight:600;color:var(--ink);margin:4px 0 2px;cursor:pointer}
+.cart-item-title:hover{color:var(--gold)}
+.cart-item-artist{font-size:12px;color:var(--muted);margin-bottom:8px}
+.cart-item-actions{display:flex;align-items:center;gap:12px;margin-top:10px;flex-wrap:wrap}
+.qty-ctrl{display:flex;align-items:center;border:1.5px solid var(--border);border-radius:6px;overflow:hidden}
+.qty-btn{width:30px;height:30px;border:none;background:#f5f5f5;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.qty-btn:hover{background:var(--gold-pale)}
+.qty-num{width:36px;text-align:center;font-size:13px;font-weight:600;border:none;background:#fff;outline:none}
+.remove-btn{font-size:12px;color:var(--red);background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:3px;padding:0}
+.save-btn{font-size:12px;color:var(--gold);background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:3px;padding:0}
+.summary-card{background:#fff;border-radius:8px;border:0.5px solid var(--border);padding:20px;position:sticky;top:90px;height:fit-content}
+.summary-title{font-size:16px;font-weight:700;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+.summary-row{display:flex;justify-content:space-between;font-size:14px;padding:6px 0;color:#555}
+.summary-row.total{border-top:2px solid var(--border);margin-top:8px;padding-top:12px;font-size:17px;font-weight:700;color:var(--ink)}
+.promo-row{display:flex;gap:8px;margin:14px 0}
+.promo-input{flex:1;padding:9px 12px;border:1.5px solid var(--border);border-radius:6px;font-size:13px;outline:none}
+.promo-input:focus{border-color:var(--gold)}
+.empty-cart{text-align:center;padding:4rem 2rem;background:#fff;border-radius:8px;border:0.5px solid var(--border)}
+.empty-cart i{font-size:64px;color:#e0e0e0;display:block;margin-bottom:16px}
+@media(max-width:768px){.cart-layout{grid-template-columns:1fr}.summary-card{position:static}}
+</style>
+</head>
+<body>
+<div id="navbar"></div>
+<div style="background:#fff;padding:8px 1.5rem;border-bottom:1px solid var(--border)">
+  <div class="breadcrumb"><a onclick="window.location.href='/'">Home</a><span class="sep">/</span><span>My Cart</span></div>
+</div>
+
+<div class="cart-layout">
+  <div>
+    <div class="cart-header">
+      <div style="font-size:18px;font-weight:700">My Cart <span id="cart-item-count" style="font-size:14px;color:var(--muted);font-weight:400"></span></div>
+      <a onclick="window.location.href='/collection'" style="font-size:13px;color:var(--gold);cursor:pointer">Continue Shopping →</a>
+    </div>
+    <div id="cart-items"></div>
+  </div>
+
+  <div>
+    <div class="summary-card">
+      <div class="summary-title">Order Summary</div>
+      <div class="summary-row"><span>Subtotal</span><span id="subtotal">₹0</span></div>
+      <div class="summary-row" style="color:var(--green)"><span><i class="ti ti-truck" style="font-size:13px;vertical-align:-1px" aria-hidden="true"></i> Delivery</span><span>FREE</span></div>
+      <div class="summary-row"><span>Tax (GST 12%)</span><span id="tax">₹0</span></div>
+      <div class="summary-row total"><span>Total</span><span id="grand-total">₹0</span></div>
+      <div class="promo-row">
+        <input class="promo-input" placeholder="Enter promo code" id="promo">
+        <button class="btn btn-outline btn-sm" onclick="applyPromo()">Apply</button>
+      </div>
+      <button class="btn btn-primary btn-block" style="font-size:14px;padding:14px;margin-top:4px" onclick="goCheckout()">
+        Proceed to Checkout →
+      </button>
+      <div style="text-align:center;margin-top:12px;font-size:11px;color:var(--muted)">
+        <i class="ti ti-shield-lock" style="font-size:13px;vertical-align:-1px;color:var(--gold)" aria-hidden="true"></i> Secure checkout · SSL encrypted
+      </div>
+      <div style="display:flex;justify-content:center;gap:8px;margin-top:12px;flex-wrap:wrap">
+        <span style="font-size:10px;background:#f5f5f5;padding:3px 8px;border-radius:3px;color:#666">Razorpay</span>
+        <span style="font-size:10px;background:#f5f5f5;padding:3px 8px;border-radius:3px;color:#666">UPI</span>
+        <span style="font-size:10px;background:#f5f5f5;padding:3px 8px;border-radius:3px;color:#666">Net Banking</span>
+        <span style="font-size:10px;background:#f5f5f5;padding:3px 8px;border-radius:3px;color:#666">COD</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="footer-wrap"></div>
+<script src="/js/app.js"></script>
+<script>
+document.getElementById('navbar').innerHTML = renderNavbar();
+document.getElementById('footer-wrap').innerHTML = renderFooter();
+
+let cartItems = [];
+
+function calcTotals() {
+  const sub = cartItems.reduce((s,i) => s + i.price * i.quantity, 0);
+  const tax = Math.round(sub * 0.12);
+  const total = sub + tax;
+  document.getElementById('subtotal').textContent = '₹' + sub.toLocaleString();
+  document.getElementById('tax').textContent = '₹' + tax.toLocaleString();
+  document.getElementById('grand-total').textContent = '₹' + total.toLocaleString();
+}
+
+function renderCart() {
+  const el = document.getElementById('cart-items');
+  document.getElementById('cart-item-count').textContent = `(${cartItems.length} item${cartItems.length!==1?'s':''})`;
+  if (!cartItems.length) {
+    el.innerHTML = `<div class="empty-cart">
+      <i class="ti ti-shopping-cart" aria-hidden="true"></i>
+      <div style="font-size:20px;font-weight:700;margin-bottom:8px">Your cart is empty</div>
+      <div style="font-size:14px;color:var(--muted);margin-bottom:20px">Looks like you haven't added any artworks yet.</div>
+      <button class="btn btn-primary" onclick="window.location.href='/collection'">Explore Collection</button>
+    </div>`;
+    return;
+  }
+  el.innerHTML = cartItems.map(item => `
+  <div class="cart-item" id="ci-${item.id}">
+    <div class="cart-item-img" style="background:linear-gradient(135deg,${item.image_color},${item.image_color2})"></div>
+    <div class="cart-item-info" style="flex:1">
+      <div class="cart-item-cat">${item.category}</div>
+      <div class="cart-item-title" onclick="window.location.href='/product?id=${item.artwork_id||item.id}'">${item.title}</div>
+      <div class="cart-item-artist">by ${item.artist}</div>
+      <div style="font-size:17px;font-weight:700;color:var(--ink)">₹${Number(item.price).toLocaleString()}</div>
+      ${item.mrp>item.price?`<div style="font-size:11px;color:var(--green)">You save ₹${(item.mrp-item.price).toLocaleString()} (${Math.round((1-item.price/item.mrp)*100)}% off)</div>`:''}
+      <div class="cart-item-actions">
+        <div class="qty-ctrl">
+          <button class="qty-btn" onclick="updateQty('${item.id}',${item.quantity-1})">−</button>
+          <span class="qty-num">${item.quantity}</span>
+          <button class="qty-btn" onclick="updateQty('${item.id}',${item.quantity+1})">+</button>
+        </div>
+        <button class="remove-btn" onclick="removeItem('${item.id}')"><i class="ti ti-trash" style="font-size:14px" aria-hidden="true"></i> Remove</button>
+        <button class="save-btn" onclick="moveToWishlist('${item.artwork_id||item.id}','${item.id}')"><i class="ti ti-heart" style="font-size:14px" aria-hidden="true"></i> Save for later</button>
+      </div>
+    </div>
+  </div>`).join('');
+  calcTotals();
+}
+
+async function updateQty(cartId, newQty) {
+  if (newQty < 1) { removeItem(cartId); return; }
+  await apiFetch(`/cart/${cartId}`, { method: 'PUT', body: { quantity: newQty } });
+  const item = cartItems.find(i => i.id === cartId);
+  if (item) item.quantity = newQty;
+  renderCart();
+  updateCartCount();
+}
+
+async function removeItem(cartId) {
+  await apiFetch(`/cart/${cartId}`, { method: 'DELETE' });
+  cartItems = cartItems.filter(i => i.id !== cartId);
+  renderCart();
+  updateCartCount();
+  toast('Item removed');
+}
+
+async function moveToWishlist(artworkId, cartId) {
+  await toggleWishlist(artworkId, null);
+  await removeItem(cartId);
+}
+
+function applyPromo() {
+  const code = document.getElementById('promo').value.trim().toUpperCase();
+  if (code === 'ART10') toast('Promo applied! 10% off (coming soon)');
+  else toast('Invalid promo code', 'error');
+}
+
+function goCheckout() {
+  if (!Auth.isLoggedIn()) { toast('Please sign in to checkout', 'info'); setTimeout(() => window.location.href='/signin?redirect=/checkout', 1000); return; }
+  if (!cartItems.length) { toast('Your cart is empty', 'error'); return; }
+  window.location.href = '/checkout';
+}
+
+async function loadCart() {
+  if (!Auth.isLoggedIn()) {
+    document.getElementById('cart-items').innerHTML = `<div class="empty-cart">
+      <i class="ti ti-lock" aria-hidden="true"></i>
+      <div style="font-size:18px;font-weight:700;margin-bottom:8px">Sign in to view your cart</div>
+      <button class="btn btn-primary" onclick="window.location.href='/signin?redirect=/cart'">Sign In</button>
+    </div>`;
+    return;
+  }
+  try {
+    cartItems = await apiFetch('/cart');
+    renderCart();
+  } catch(e) { toast(e.message,'error'); }
+}
+
+loadCart();
+</script>
+</body>
+</html>

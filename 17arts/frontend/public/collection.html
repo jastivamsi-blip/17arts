@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Art Collection — 17ARTS</title>
+<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+.collection-layout{display:grid;grid-template-columns:230px 1fr;gap:16px;max-width:1300px;margin:0 auto;padding:20px 1.5rem 100px}
+.sort-bar{background:#fff;border-radius:6px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;border:0.5px solid var(--border);margin-bottom:12px}
+.sort-opts{display:flex;gap:0}
+.sort-opt{font-size:12px;padding:5px 12px;border:0.5px solid #ddd;cursor:pointer;background:#fff;color:#555;transition:all 0.15s}
+.sort-opt:first-child{border-radius:4px 0 0 4px}
+.sort-opt:last-child{border-radius:0 4px 4px 0}
+.sort-opt.active{background:var(--gold);color:var(--navy);border-color:var(--gold);font-weight:600}
+.prod-grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.filter-panel{background:#fff;border-radius:8px;border:0.5px solid var(--border);padding:16px;position:sticky;top:100px;height:fit-content}
+.filter-title{font-size:15px;font-weight:700;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.filter-group{margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid #f0f0f0}
+.filter-group:last-child{border-bottom:none;margin-bottom:0}
+.filter-group-title{font-size:12px;font-weight:600;color:#374151;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;cursor:pointer}
+.filter-opt{display:flex;align-items:center;gap:7px;padding:4px 0;cursor:pointer}
+.filter-opt input[type=checkbox]{accent-color:var(--gold);width:14px;height:14px;cursor:pointer}
+.filter-opt label{font-size:12px;color:#555;cursor:pointer;flex:1}
+.filter-opt .fc{font-size:10px;color:#bbb}
+.price-inputs{display:flex;gap:6px;align-items:center;margin-top:6px}
+.price-inputs input{flex:1;border:1.5px solid var(--border);border-radius:4px;padding:6px 8px;font-size:12px;outline:none;width:100%}
+.price-inputs input:focus{border-color:var(--gold)}
+.result-info{font-size:13px;color:#555;margin-bottom:10px}
+.result-info strong{color:var(--ink)}
+.pagination{display:flex;gap:4px;justify-content:center;margin-top:20px}
+.pg-btn{width:36px;height:36px;border-radius:4px;border:0.5px solid var(--border);background:#fff;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s}
+.pg-btn.active{background:var(--gold);color:var(--navy);border-color:var(--gold);font-weight:700}
+.pg-btn:hover:not(.active){background:#f9f5ea;border-color:var(--gold)}
+.applied-filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.filter-tag{display:flex;align-items:center;gap:4px;background:var(--gold-pale);border:1px solid rgba(184,151,42,0.4);color:var(--navy);font-size:11px;padding:3px 8px;border-radius:12px;font-weight:500}
+.filter-tag button{background:none;border:none;cursor:pointer;color:var(--navy);font-size:13px;line-height:1;padding:0 0 0 2px}
+@media(max-width:900px){.collection-layout{grid-template-columns:1fr}.filter-panel{position:static}.prod-grid-4{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div id="navbar"></div>
+
+<div style="background:#fff;padding:8px 1.5rem;border-bottom:1px solid var(--border)">
+  <div class="breadcrumb">
+    <a onclick="window.location.href='/'">Home</a><span class="sep">/</span>
+    <span id="bc-label">All Artworks</span>
+  </div>
+</div>
+
+<div class="collection-layout">
+  <!-- FILTER PANEL -->
+  <div class="filter-panel">
+    <div class="filter-title"><i class="ti ti-filter" style="font-size:15px;vertical-align:-2px;margin-right:5px" aria-hidden="true"></i>Filters <span id="clear-filters" style="font-size:11px;color:var(--gold);font-weight:500;cursor:pointer;margin-left:auto">Clear all</span></div>
+
+    <div class="filter-group">
+      <div class="filter-group-title">Category</div>
+      <div id="cat-filters">
+        <div class="filter-opt"><input type="checkbox" id="cat-all" checked onchange="filterChange()"><label for="cat-all">All Categories</label></div>
+        <div class="filter-opt"><input type="checkbox" id="cat-Traditional" onchange="filterChange()"><label for="cat-Traditional">Traditional</label><span class="fc">89</span></div>
+        <div class="filter-opt"><input type="checkbox" id="cat-Contemporary" onchange="filterChange()"><label for="cat-Contemporary">Contemporary</label><span class="fc">64</span></div>
+        <div class="filter-opt"><input type="checkbox" id="cat-Heritage" onchange="filterChange()"><label for="cat-Heritage">Heritage</label><span class="fc">47</span></div>
+        <div class="filter-opt"><input type="checkbox" id="cat-Abstract" onchange="filterChange()"><label for="cat-Abstract">Abstract</label><span class="fc">52</span></div>
+        <div class="filter-opt"><input type="checkbox" id="cat-Folk" onchange="filterChange()"><label for="cat-Folk">Folk</label><span class="fc">38</span></div>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <div class="filter-group-title">Price Range</div>
+      <div class="price-inputs">
+        <input type="number" id="min-price" placeholder="Min ₹" onchange="filterChange()">
+        <span style="color:#aaa;font-size:12px">–</span>
+        <input type="number" id="max-price" placeholder="Max ₹" onchange="filterChange()">
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <div class="filter-group-title">Customer Rating</div>
+      <div class="filter-opt"><input type="checkbox" id="r5" onchange="filterChange()"><label for="r5">⭐⭐⭐⭐⭐ &amp; above</label></div>
+      <div class="filter-opt"><input type="checkbox" id="r4" onchange="filterChange()"><label for="r4">⭐⭐⭐⭐ &amp; above</label></div>
+      <div class="filter-opt"><input type="checkbox" id="r3" onchange="filterChange()"><label for="r3">⭐⭐⭐ &amp; above</label></div>
+    </div>
+
+    <div class="filter-group">
+      <div class="filter-group-title">Medium</div>
+      <div class="filter-opt"><input type="checkbox" onchange="filterChange()"><label>Watercolour</label></div>
+      <div class="filter-opt"><input type="checkbox" onchange="filterChange()"><label>Oil on Canvas</label></div>
+      <div class="filter-opt"><input type="checkbox" onchange="filterChange()"><label>Acrylic</label></div>
+      <div class="filter-opt"><input type="checkbox" onchange="filterChange()"><label>Mixed Media</label></div>
+      <div class="filter-opt"><input type="checkbox" onchange="filterChange()"><label>Natural Pigments</label></div>
+    </div>
+
+    <button class="btn btn-primary btn-block" onclick="loadArtworks()">Apply Filters</button>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div>
+    <div id="applied-filters" class="applied-filters"></div>
+    <div class="sort-bar">
+      <div class="result-info" id="result-info">Loading…</div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="font-size:12px;color:#666">Sort:</span>
+        <div class="sort-opts">
+          <button class="sort-opt active" onclick="setSort('',this)">Popular</button>
+          <button class="sort-opt" onclick="setSort('newest',this)">Newest</button>
+          <button class="sort-opt" onclick="setSort('price_asc',this)">Price ↑</button>
+          <button class="sort-opt" onclick="setSort('price_desc',this)">Price ↓</button>
+          <button class="sort-opt" onclick="setSort('rating',this)">Top Rated</button>
+        </div>
+      </div>
+    </div>
+    <div class="prod-grid-4" id="prod-grid"><div class="loading" style="grid-column:1/-1"><div class="spinner"></div></div></div>
+    <div class="pagination" id="pagination"></div>
+  </div>
+</div>
+
+<div id="footer-wrap"></div>
+<script src="/js/app.js"></script>
+<script>
+document.getElementById('navbar').innerHTML = renderNavbar('collection');
+document.getElementById('footer-wrap').innerHTML = renderFooter();
+
+let currentSort = '';
+let wishSet = new Set();
+let allArtworks = [];
+
+// Read URL params
+const params = new URLSearchParams(window.location.search);
+const urlCat = params.get('cat') || '';
+const urlSearch = params.get('search') || '';
+
+// Pre-select category from URL
+if (urlCat) {
+  const cb = document.getElementById('cat-' + urlCat);
+  if (cb) { cb.checked = true; document.getElementById('cat-all').checked = false; }
+  document.getElementById('bc-label').textContent = urlCat + ' Art';
+}
+if (urlSearch) {
+  document.getElementById('bc-label').textContent = `Results for "${urlSearch}"`;
+}
+
+// Pre-fill search bar
+if (urlSearch) {
+  setTimeout(() => { const el = document.getElementById('search-input'); if (el) el.value = urlSearch; }, 100);
+}
+
+function setSort(val, btn) {
+  currentSort = val;
+  document.querySelectorAll('.sort-opt').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  loadArtworks();
+}
+
+function filterChange() {
+  // If specific cat checked, uncheck "all"
+  const cats = ['Traditional','Contemporary','Heritage','Abstract','Folk'];
+  const anyCat = cats.some(c => document.getElementById('cat-'+c)?.checked);
+  if (anyCat) document.getElementById('cat-all').checked = false;
+  else document.getElementById('cat-all').checked = true;
+}
+
+document.getElementById('cat-all').addEventListener('change', function() {
+  if (this.checked) {
+    ['Traditional','Contemporary','Heritage','Abstract','Folk'].forEach(c => {
+      const el = document.getElementById('cat-'+c); if (el) el.checked = false;
+    });
+  }
+});
+
+document.getElementById('clear-filters').addEventListener('click', () => {
+  document.getElementById('cat-all').checked = true;
+  ['Traditional','Contemporary','Heritage','Abstract','Folk'].forEach(c => {
+    const el = document.getElementById('cat-'+c); if (el) el.checked = false;
+  });
+  document.getElementById('min-price').value = '';
+  document.getElementById('max-price').value = '';
+  ['r3','r4','r5'].forEach(id => { const el = document.getElementById(id); if(el) el.checked=false; });
+  loadArtworks();
+});
+
+async function loadArtworks() {
+  document.getElementById('prod-grid').innerHTML = '<div class="loading" style="grid-column:1/-1"><div class="spinner"></div></div>';
+  const cats = ['Traditional','Contemporary','Heritage','Abstract','Folk'].filter(c => document.getElementById('cat-'+c)?.checked);
+  const cat = cats.length === 1 ? cats[0] : urlCat && !cats.length ? urlCat : '';
+  const minP = document.getElementById('min-price').value;
+  const maxP = document.getElementById('max-price').value;
+
+  let url = `/artworks?sort=${currentSort}&limit=50`;
+  if (cat) url += `&category=${encodeURIComponent(cat)}`;
+  if (urlSearch) url += `&search=${encodeURIComponent(urlSearch)}`;
+
+  try {
+    let artworks = await apiFetch(url);
+
+    // Client-side price filter
+    if (minP) artworks = artworks.filter(a => a.price >= parseFloat(minP));
+    if (maxP) artworks = artworks.filter(a => a.price <= parseFloat(maxP));
+
+    // Rating filter
+    const minRating = document.getElementById('r5')?.checked ? 4.8 : document.getElementById('r4')?.checked ? 4.0 : document.getElementById('r3')?.checked ? 3.0 : 0;
+    if (minRating) artworks = artworks.filter(a => a.rating >= minRating);
+
+    allArtworks = artworks;
+    document.getElementById('result-info').innerHTML = `Showing <strong>${artworks.length}</strong> result${artworks.length!==1?'s':''}`;
+
+    // Wishlist
+    if (Auth.isLoggedIn()) {
+      try { const w = await apiFetch('/wishlist'); w.forEach(i => wishSet.add(i.id)); } catch {}
+    }
+
+    if (!artworks.length) {
+      document.getElementById('prod-grid').innerHTML = '<div class="loading" style="grid-column:1/-1"><p>No artworks found. Try different filters.</p></div>';
+      return;
+    }
+    document.getElementById('prod-grid').innerHTML = artworks.map(a => prodCard(a, wishSet)).join('');
+  } catch(e) {
+    document.getElementById('prod-grid').innerHTML = `<div class="loading" style="grid-column:1/-1;color:red">${e.message}</div>`;
+  }
+}
+
+loadArtworks();
+</script>
+</body>
+</html>

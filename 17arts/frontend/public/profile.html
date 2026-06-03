@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>My Account — 17ARTS</title>
+<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+.order-card{background:#fff;border-radius:8px;border:0.5px solid var(--border);padding:16px;margin-bottom:12px}
+.order-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid #f0f0f0;flex-wrap:wrap;gap:8px}
+.order-id{font-size:13px;font-weight:600;color:var(--ink)}
+.order-date{font-size:12px;color:var(--muted)}
+.order-item-row{display:flex;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid #f9f9f9}
+.order-item-row:last-child{border-bottom:none}
+.oi-thumb{width:56px;height:56px;border-radius:6px;flex-shrink:0}
+.wish-prod-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.addr-list-card{border:1.5px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;position:relative}
+.addr-list-card.default-addr{border-color:var(--gold);background:var(--gold-pale)}
+.addr-actions{display:flex;gap:8px;margin-top:10px}
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+.stat-card{background:#fff;border-radius:8px;border:0.5px solid var(--border);padding:16px;text-align:center}
+.stat-val{font-size:26px;font-weight:700;color:var(--navy);font-family:'Cormorant Garamond',serif}
+.stat-lbl{font-size:12px;color:var(--muted);margin-top:4px}
+@media(max-width:768px){.wish-prod-grid{grid-template-columns:repeat(2,1fr)}.stats-row{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div id="navbar"></div>
+
+<div style="background:#fff;padding:8px 1.5rem;border-bottom:1px solid var(--border)">
+  <div class="breadcrumb"><a onclick="window.location.href='/'">Home</a><span class="sep">/</span><span id="bc-page">My Account</span></div>
+</div>
+
+<div class="dash-layout" id="dash-layout">
+  <!-- SIDEBAR -->
+  <div class="dash-sidebar">
+    <div class="sb-user">
+      <div class="sb-avatar" id="sb-avatar">?</div>
+      <div class="sb-name" id="sb-name">Loading…</div>
+      <div class="sb-role" id="sb-role">user</div>
+    </div>
+    <div class="sb-link active" id="nav-profile" onclick="showPage('profile')"><i class="ti ti-user" aria-hidden="true"></i> Profile</div>
+    <div class="sb-link" id="nav-orders" onclick="showPage('orders')"><i class="ti ti-package" aria-hidden="true"></i> My Orders</div>
+    <div class="sb-link" id="nav-wishlist" onclick="showPage('wishlist')"><i class="ti ti-heart" aria-hidden="true"></i> Wishlist</div>
+    <div class="sb-link" id="nav-addresses" onclick="showPage('addresses')"><i class="ti ti-map-pin" aria-hidden="true"></i> Addresses</div>
+    <div class="sb-link" style="margin-top:auto;color:var(--red)" onclick="Auth.logout()"><i class="ti ti-logout" aria-hidden="true"></i> Sign Out</div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="dash-content" id="dash-content">
+    <div class="loading"><div class="spinner"></div></div>
+  </div>
+</div>
+
+<div id="footer-wrap"></div>
+<script src="/js/app.js"></script>
+<script>
+document.getElementById('navbar').innerHTML = renderNavbar();
+document.getElementById('footer-wrap').innerHTML = renderFooter();
+if (!Auth.isLoggedIn()) { window.location.href = '/signin'; }
+
+const user = Auth.getUser();
+if (user) {
+  document.getElementById('sb-name').textContent = user.name;
+  document.getElementById('sb-role').textContent = user.role;
+  document.getElementById('sb-avatar').textContent = user.name[0].toUpperCase();
+}
+
+// URL-based routing
+const hash = window.location.hash.replace('#','') || 'profile';
+let currentPage = hash;
+
+function showPage(page) {
+  currentPage = page;
+  window.location.hash = page;
+  document.querySelectorAll('.sb-link').forEach(l => l.classList.remove('active'));
+  document.getElementById('nav-'+page)?.classList.add('active');
+  document.getElementById('bc-page').textContent = { profile:'My Profile', orders:'My Orders', wishlist:'Wishlist', addresses:'My Addresses' }[page] || page;
+  pages[page]?.();
+}
+
+const pages = {
+  async profile() {
+    const u = await apiFetch('/auth/me');
+    const [orders, wishlist] = await Promise.all([apiFetch('/orders'), apiFetch('/wishlist')]);
+    document.getElementById('dash-content').innerHTML = `
+    <div class="page-title">My Profile</div>
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-val">${orders.length}</div><div class="stat-lbl">Orders</div></div>
+      <div class="stat-card"><div class="stat-val">${wishlist.length}</div><div class="stat-lbl">Wishlist</div></div>
+      <div class="stat-card"><div class="stat-val">${orders.filter(o=>o.status==='Delivered').length}</div><div class="stat-lbl">Delivered</div></div>
+    </div>
+    <div style="background:#fff;border-radius:8px;border:0.5px solid var(--border);padding:20px;max-width:520px">
+      <div id="profile-alert"></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Full Name</label><input class="form-input" id="p-name" value="${u.name||''}"></div>
+        <div class="form-group"><label class="form-label">Phone</label><input class="form-input" id="p-phone" value="${u.phone||''}"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Email Address</label><input class="form-input" value="${u.email}" readonly style="background:#f5f5f5;cursor:not-allowed"></div>
+      <div class="form-group"><label class="form-label">Member Since</label><input class="form-input" value="${new Date(u.created_at).toLocaleDateString('en-IN',{year:'numeric',month:'long',day:'numeric'})}" readonly style="background:#f5f5f5;cursor:not-allowed"></div>
+      <button class="btn btn-primary" onclick="saveProfile()">Save Changes</button>
+    </div>`;
+  },
+
+  async orders() {
+    const orders = await apiFetch('/orders');
+    if (!orders.length) {
+      document.getElementById('dash-content').innerHTML = `<div class="page-title">My Orders</div><div style="text-align:center;padding:3rem;background:#fff;border-radius:8px;border:0.5px solid var(--border)"><i class="ti ti-package" style="font-size:48px;color:#e0e0e0;display:block;margin-bottom:12px" aria-hidden="true"></i><div style="font-size:16px;font-weight:600;margin-bottom:8px">No orders yet</div><button class="btn btn-primary" onclick="window.location.href='/collection'">Start Shopping</button></div>`;
+      return;
+    }
+    document.getElementById('dash-content').innerHTML = `<div class="page-title">My Orders</div>` + orders.map(o => `
+    <div class="order-card">
+      <div class="order-top">
+        <div><div class="order-id">Order #${o.id.slice(0,8).toUpperCase()}</div><div class="order-date">${new Date(o.created_at).toLocaleDateString('en-IN',{year:'numeric',month:'long',day:'numeric'})}</div></div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <span class="status status-${o.status.toLowerCase()}">${o.status}</span>
+          <div style="font-size:15px;font-weight:700">₹${Number(o.total).toLocaleString()}</div>
+        </div>
+      </div>
+      <div>${o.items.map(i => `<div class="order-item-row"><div class="oi-thumb" style="background:linear-gradient(135deg,${i.image_color},${i.image_color2})"></div><div style="flex:1"><div style="font-size:13px;font-weight:500">${i.title}</div><div style="font-size:11px;color:var(--muted)">Qty: ${i.quantity} · ₹${Number(i.price).toLocaleString()}</div></div><div style="font-size:13px;font-weight:600">₹${Number(i.price*i.quantity).toLocaleString()}</div></div>`).join('')}</div>
+      <div style="margin-top:10px;padding-top:10px;border-top:1px solid #f0f0f0;display:flex;gap:8px;flex-wrap:wrap">
+        <span style="font-size:12px;color:var(--muted)">Payment: <strong>${o.payment_method}</strong></span>
+        ${o.status==='Processing'?`<button class="btn btn-danger btn-sm" style="margin-left:auto" onclick="cancelOrder('${o.id}')">Cancel Order</button>`:''}
+        ${o.status==='Delivered'?`<button class="btn btn-outline btn-sm" style="margin-left:auto">Write Review</button>`:''}
+      </div>
+    </div>`).join('');
+  },
+
+  async wishlist() {
+    const items = await apiFetch('/wishlist');
+    if (!items.length) {
+      document.getElementById('dash-content').innerHTML = `<div class="page-title">My Wishlist</div><div style="text-align:center;padding:3rem;background:#fff;border-radius:8px;border:0.5px solid var(--border)"><i class="ti ti-heart" style="font-size:48px;color:#e0e0e0;display:block;margin-bottom:12px" aria-hidden="true"></i><div style="font-size:16px;font-weight:600;margin-bottom:8px">Your wishlist is empty</div><button class="btn btn-primary" onclick="window.location.href='/collection'">Browse Artworks</button></div>`;
+      return;
+    }
+    const wishSet = new Set(items.map(i=>i.id));
+    document.getElementById('dash-content').innerHTML = `<div class="page-title">My Wishlist (${items.length})</div><div class="wish-prod-grid">${items.map(a => prodCard(a, wishSet)).join('')}</div>`;
+  },
+
+  async addresses() {
+    const addrs = await apiFetch('/addresses');
+    document.getElementById('dash-content').innerHTML = `
+    <div class="page-title">My Addresses</div>
+    <div id="addr-list-dash">` + (addrs.length ? addrs.map(a => `
+    <div class="addr-list-card ${a.is_default?'default-addr':''}">
+      ${a.is_default?'<span style="font-size:10px;background:var(--gold);color:var(--navy);padding:2px 8px;border-radius:3px;font-weight:700;position:absolute;top:12px;right:12px">DEFAULT</span>':''}
+      <div style="font-size:14px;font-weight:600;margin-bottom:4px">${a.name} <span style="font-size:12px;color:var(--muted);font-weight:400">${a.phone}</span></div>
+      <div style="font-size:13px;color:#555;line-height:1.6">${a.line1}${a.line2?'<br>'+a.line2:''}<br>${a.city}, ${a.state} — ${a.pincode}</div>
+      <div class="addr-actions">
+        <button class="btn btn-danger btn-sm" onclick="deleteAddr('${a.id}')"><i class="ti ti-trash" style="font-size:13px;vertical-align:-1px" aria-hidden="true"></i> Delete</button>
+      </div>
+    </div>`).join('') : '<div style="font-size:13px;color:var(--muted);padding:8px 0">No saved addresses yet.</div>') + `</div>
+    <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
+      <div style="font-size:15px;font-weight:600;margin-bottom:14px">Add New Address</div>
+      <div id="addr-form-dash" style="max-width:520px">
+        <div class="form-row"><div class="form-group"><label class="form-label">Full Name</label><input class="form-input" id="da-name" placeholder="Full name"></div><div class="form-group"><label class="form-label">Phone</label><input class="form-input" id="da-phone" placeholder="+91 9999999999"></div></div>
+        <div class="form-group"><label class="form-label">Address Line 1</label><input class="form-input" id="da-line1" placeholder="House/Flat No, Street"></div>
+        <div class="form-group"><label class="form-label">Address Line 2</label><input class="form-input" id="da-line2" placeholder="Area, Landmark (optional)"></div>
+        <div class="form-row"><div class="form-group"><label class="form-label">City</label><input class="form-input" id="da-city"></div><div class="form-group"><label class="form-label">State</label><input class="form-input" id="da-state"></div></div>
+        <div class="form-row"><div class="form-group"><label class="form-label">Pincode</label><input class="form-input" id="da-pin"></div><div class="form-group" style="display:flex;align-items:flex-end;padding-bottom:16px"><label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" id="da-def" style="accent-color:var(--gold)"> Set as default</label></div></div>
+        <button class="btn btn-primary" onclick="addAddress()">Save Address</button>
+      </div>
+    </div>`;
+  }
+};
+
+async function saveProfile() {
+  const name = document.getElementById('p-name').value;
+  const phone = document.getElementById('p-phone').value;
+  try {
+    await apiFetch('/auth/profile', { method:'PUT', body:{ name, phone }});
+    const u = Auth.getUser(); u.name = name; Auth.setSession(Auth.getToken(), u);
+    document.getElementById('sb-name').textContent = name;
+    document.getElementById('sb-avatar').textContent = name[0].toUpperCase();
+    document.getElementById('profile-alert').innerHTML = '<div class="alert alert-success">Profile updated!</div>';
+    setTimeout(() => document.getElementById('profile-alert').innerHTML='', 2000);
+  } catch(e) { toast(e.message,'error'); }
+}
+
+async function cancelOrder(id) {
+  if (!confirm('Cancel this order?')) return;
+  toast('Order cancellation requested', 'info');
+}
+
+async function deleteAddr(id) {
+  if (!confirm('Delete this address?')) return;
+  await apiFetch(`/addresses/${id}`, { method:'DELETE' });
+  toast('Address deleted');
+  pages.addresses();
+}
+
+async function addAddress() {
+  const data = { name:document.getElementById('da-name').value, phone:document.getElementById('da-phone').value, line1:document.getElementById('da-line1').value, line2:document.getElementById('da-line2').value, city:document.getElementById('da-city').value, state:document.getElementById('da-state').value, pincode:document.getElementById('da-pin').value, is_default:document.getElementById('da-def').checked };
+  if (!data.name||!data.phone||!data.line1||!data.city||!data.state||!data.pincode) { toast('Fill all required fields','error'); return; }
+  await apiFetch('/addresses',{method:'POST',body:data});
+  toast('Address saved!');
+  pages.addresses();
+}
+
+// Route based on current hash / URL
+const pathMap = { '/profile':'profile', '/orders':'orders', '/wishlist':'wishlist', '/addresses':'addresses' };
+const initPage = pathMap[window.location.pathname] || hash || 'profile';
+showPage(initPage);
+
+window.saveProfile = saveProfile;
+window.cancelOrder = cancelOrder;
+window.deleteAddr = deleteAddr;
+window.addAddress = addAddress;
+</script>
+</body>
+</html>

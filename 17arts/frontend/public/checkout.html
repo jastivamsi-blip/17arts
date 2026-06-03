@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Checkout — 17ARTS</title>
+<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+.checkout-wrap{display:grid;grid-template-columns:1fr 360px;gap:20px;max-width:1050px;margin:0 auto;padding:24px 1.5rem 60px}
+.step-bar{display:flex;align-items:center;gap:0;margin-bottom:20px;background:#fff;border-radius:8px;padding:14px 20px;border:0.5px solid var(--border)}
+.step{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:#aaa}
+.step.active{color:var(--navy)}
+.step.done{color:var(--green)}
+.step-num{width:26px;height:26px;border-radius:50%;background:#eee;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+.step.active .step-num{background:var(--gold);color:var(--navy)}
+.step.done .step-num{background:var(--green);color:#fff}
+.step-line{flex:1;height:1px;background:#eee;margin:0 10px}
+.section-card{background:#fff;border-radius:8px;border:0.5px solid var(--border);padding:20px;margin-bottom:14px}
+.section-card-title{font-size:15px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.addr-card{border:1.5px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;cursor:pointer;transition:all 0.15s;position:relative}
+.addr-card.selected{border-color:var(--gold);background:var(--gold-pale)}
+.addr-card input[type=radio]{position:absolute;top:14px;right:14px;accent-color:var(--gold);width:16px;height:16px}
+.pay-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pay-opt{border:1.5px solid var(--border);border-radius:8px;padding:14px;cursor:pointer;transition:all 0.15s;position:relative}
+.pay-opt.selected{border-color:var(--gold);background:var(--gold-pale)}
+.pay-opt input[type=radio]{position:absolute;top:12px;right:12px;accent-color:var(--gold)}
+.pay-opt-icon{font-size:24px;margin-bottom:6px}
+.pay-opt-name{font-size:13px;font-weight:600;color:var(--ink)}
+.pay-opt-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.order-item-row{display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid #f5f5f5}
+.order-item-row:last-child{border-bottom:none}
+.order-item-thumb{width:52px;height:52px;border-radius:6px;flex-shrink:0}
+.summary-rows{margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
+.sum-row{display:flex;justify-content:space-between;font-size:14px;padding:5px 0;color:#555}
+.sum-row.total{font-size:17px;font-weight:700;color:var(--ink);border-top:2px solid var(--border);margin-top:8px;padding-top:12px}
+.success-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:1000;display:flex;align-items:center;justify-content:center;display:none}
+.success-box{background:#fff;border-radius:16px;padding:2.5rem;text-align:center;max-width:400px;width:90%;animation:popIn 0.4s ease}
+@keyframes popIn{from{transform:scale(0.8);opacity:0}to{transform:scale(1);opacity:1}}
+.success-icon{width:72px;height:72px;background:#EAF3DE;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:36px;color:var(--green)}
+@media(max-width:768px){.checkout-wrap{grid-template-columns:1fr}.pay-grid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div id="navbar"></div>
+<div style="background:#fff;padding:8px 1.5rem;border-bottom:1px solid var(--border)">
+  <div class="breadcrumb"><a onclick="window.location.href='/'">Home</a><span class="sep">/</span><a onclick="window.location.href='/cart'">Cart</a><span class="sep">/</span><span>Checkout</span></div>
+</div>
+
+<div class="checkout-wrap">
+  <div>
+    <!-- STEPS -->
+    <div class="step-bar">
+      <div class="step done"><div class="step-num"><i class="ti ti-check" style="font-size:12px" aria-hidden="true"></i></div> Cart</div>
+      <div class="step-line"></div>
+      <div class="step active"><div class="step-num">2</div> Address</div>
+      <div class="step-line"></div>
+      <div class="step"><div class="step-num">3</div> Payment</div>
+      <div class="step-line"></div>
+      <div class="step"><div class="step-num">4</div> Confirm</div>
+    </div>
+
+    <!-- ADDRESS -->
+    <div class="section-card">
+      <div class="section-card-title"><i class="ti ti-map-pin" style="color:var(--gold);font-size:18px" aria-hidden="true"></i> Delivery Address</div>
+      <div id="addr-list"><div class="loading"><div class="spinner"></div></div></div>
+      <button class="btn btn-outline btn-sm" style="margin-top:10px" onclick="toggleAddForm()">
+        <i class="ti ti-plus" style="font-size:13px;vertical-align:-1px" aria-hidden="true"></i> Add New Address
+      </button>
+      <div id="add-addr-form" style="display:none;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
+        <div style="font-size:14px;font-weight:600;margin-bottom:12px">New Address</div>
+        <div class="form-row"><div class="form-group"><label class="form-label">Full Name</label><input class="form-input" id="a-name" placeholder="Your full name"></div><div class="form-group"><label class="form-label">Phone</label><input class="form-input" id="a-phone" placeholder="+91 9999999999"></div></div>
+        <div class="form-group"><label class="form-label">Address Line 1</label><input class="form-input" id="a-line1" placeholder="House/Flat No, Street"></div>
+        <div class="form-group"><label class="form-label">Address Line 2</label><input class="form-input" id="a-line2" placeholder="Area, Landmark (optional)"></div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">City</label><input class="form-input" id="a-city" placeholder="City"></div>
+          <div class="form-group"><label class="form-label">State</label><input class="form-input" id="a-state" placeholder="State"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Pincode</label><input class="form-input" id="a-pin" placeholder="500001"></div>
+          <div class="form-group" style="display:flex;align-items:flex-end;padding-bottom:16px"><label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" id="a-default" accent-color="var(--gold)"> Set as default</label></div>
+        </div>
+        <button class="btn btn-primary" onclick="saveAddress()">Save Address</button>
+        <button class="btn btn-outline btn-sm" style="margin-left:8px" onclick="toggleAddForm()">Cancel</button>
+      </div>
+    </div>
+
+    <!-- PAYMENT -->
+    <div class="section-card">
+      <div class="section-card-title"><i class="ti ti-credit-card" style="color:var(--gold);font-size:18px" aria-hidden="true"></i> Payment Method</div>
+      <div class="pay-grid">
+        <div class="pay-opt selected" onclick="selectPay('razorpay',this)">
+          <input type="radio" name="pay" checked>
+          <div class="pay-opt-icon">📱</div>
+          <div class="pay-opt-name">Razorpay</div>
+          <div class="pay-opt-sub">UPI · Cards · Net Banking · Wallets</div>
+        </div>
+        <div class="pay-opt" onclick="selectPay('upi',this)">
+          <input type="radio" name="pay">
+          <div class="pay-opt-icon">🔷</div>
+          <div class="pay-opt-name">UPI Direct</div>
+          <div class="pay-opt-sub">GPay · PhonePe · Paytm</div>
+        </div>
+        <div class="pay-opt" onclick="selectPay('cod',this)">
+          <input type="radio" name="pay">
+          <div class="pay-opt-icon">🏠</div>
+          <div class="pay-opt-name">Cash on Delivery</div>
+          <div class="pay-opt-sub">Pay when delivered</div>
+        </div>
+        <div class="pay-opt" onclick="selectPay('stripe',this)">
+          <input type="radio" name="pay">
+          <div class="pay-opt-icon">💳</div>
+          <div class="pay-opt-name">Stripe</div>
+          <div class="pay-opt-sub">International cards</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ORDER SUMMARY -->
+  <div>
+    <div class="section-card" style="position:sticky;top:90px">
+      <div class="section-card-title"><i class="ti ti-receipt" style="color:var(--gold);font-size:18px" aria-hidden="true"></i> Order Summary</div>
+      <div id="checkout-items"><div class="loading"><div class="spinner"></div></div></div>
+      <div class="summary-rows">
+        <div class="sum-row"><span>Subtotal</span><span id="co-sub">₹0</span></div>
+        <div class="sum-row" style="color:var(--green)"><span>Delivery</span><span>FREE</span></div>
+        <div class="sum-row"><span>GST (12%)</span><span id="co-tax">₹0</span></div>
+        <div class="sum-row total"><span>Total</span><span id="co-total">₹0</span></div>
+      </div>
+      <button class="btn btn-primary btn-block" style="margin-top:16px;font-size:14px;padding:14px" onclick="placeOrder()">
+        <i class="ti ti-lock" style="font-size:15px;vertical-align:-2px;margin-right:6px" aria-hidden="true"></i> Place Order
+      </button>
+      <div style="text-align:center;margin-top:10px;font-size:11px;color:var(--muted)">
+        <i class="ti ti-brand-whatsapp" style="color:#25D366;font-size:13px;vertical-align:-1px" aria-hidden="true"></i> WhatsApp confirmation will be sent
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SUCCESS OVERLAY -->
+<div class="success-overlay" id="success-overlay">
+  <div class="success-box">
+    <div class="success-icon"><i class="ti ti-check" aria-hidden="true"></i></div>
+    <div style="font-size:22px;font-weight:700;color:var(--ink);margin-bottom:8px">Order Placed!</div>
+    <div style="font-size:14px;color:var(--muted);margin-bottom:6px">Order ID: <strong id="success-order-id"></strong></div>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:24px">Thank you for your purchase. A WhatsApp confirmation has been sent.</div>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+      <button class="btn btn-primary" onclick="window.location.href='/orders'">View Orders</button>
+      <button class="btn btn-outline" onclick="window.location.href='/'">Continue Shopping</button>
+    </div>
+  </div>
+</div>
+
+<div id="footer-wrap"></div>
+<script src="/js/app.js"></script>
+<script>
+document.getElementById('navbar').innerHTML = renderNavbar();
+document.getElementById('footer-wrap').innerHTML = renderFooter();
+
+if (!Auth.isLoggedIn()) { window.location.href = '/signin?redirect=/checkout'; }
+
+let cartItems = [], addresses = [], selectedAddr = null, selectedPay = 'razorpay';
+
+function selectPay(method, el) {
+  selectedPay = method;
+  document.querySelectorAll('.pay-opt').forEach(o => { o.classList.remove('selected'); o.querySelector('input').checked = false; });
+  el.classList.add('selected');
+  el.querySelector('input').checked = true;
+}
+
+function toggleAddForm() {
+  const f = document.getElementById('add-addr-form');
+  f.style.display = f.style.display === 'none' ? 'block' : 'none';
+}
+
+function renderAddresses() {
+  const el = document.getElementById('addr-list');
+  if (!addresses.length) { el.innerHTML = '<div style="font-size:13px;color:var(--muted);padding:8px 0">No saved addresses. Add one below.</div>'; return; }
+  el.innerHTML = addresses.map(a => `
+  <div class="addr-card ${a.id===selectedAddr?'selected':''}" onclick="selectAddr('${a.id}')">
+    <input type="radio" name="addr" ${a.id===selectedAddr?'checked':''}>
+    <div style="font-size:13px;font-weight:600;margin-bottom:4px">${a.name} <span style="font-size:12px;color:var(--muted);font-weight:400">${a.phone}</span>${a.is_default?'<span style="font-size:10px;background:var(--gold-pale);color:var(--gold);padding:2px 6px;border-radius:3px;margin-left:6px;font-weight:600">Default</span>':''}</div>
+    <div style="font-size:13px;color:#555">${a.line1}${a.line2?', '+a.line2:''}, ${a.city}, ${a.state} — ${a.pincode}</div>
+  </div>`).join('');
+}
+
+function selectAddr(id) {
+  selectedAddr = id;
+  renderAddresses();
+}
+
+async function saveAddress() {
+  const data = { name:document.getElementById('a-name').value, phone:document.getElementById('a-phone').value, line1:document.getElementById('a-line1').value, line2:document.getElementById('a-line2').value, city:document.getElementById('a-city').value, state:document.getElementById('a-state').value, pincode:document.getElementById('a-pin').value, is_default:document.getElementById('a-default').checked };
+  if (!data.name||!data.phone||!data.line1||!data.city||!data.state||!data.pincode) { toast('Please fill all required fields','error'); return; }
+  try {
+    const r = await apiFetch('/addresses',{method:'POST',body:data});
+    toast('Address saved!');
+    addresses = await apiFetch('/addresses');
+    selectedAddr = r.id;
+    renderAddresses();
+    toggleAddForm();
+  } catch(e) { toast(e.message,'error'); }
+}
+
+async function placeOrder() {
+  if (!selectedAddr) { toast('Please select a delivery address','error'); return; }
+  if (!cartItems.length) { toast('Your cart is empty','error'); return; }
+  try {
+    const items = cartItems.map(i => ({ artwork_id: i.artwork_id||i.id, quantity: i.quantity, price: i.price }));
+    const r = await apiFetch('/orders',{method:'POST',body:{address_id:selectedAddr,payment_method:selectedPay,items}});
+    document.getElementById('success-order-id').textContent = r.order_id.slice(0,8).toUpperCase();
+    document.getElementById('success-overlay').style.display = 'flex';
+    updateCartCount();
+  } catch(e) { toast(e.message,'error'); }
+}
+
+async function loadCheckout() {
+  [cartItems, addresses] = await Promise.all([apiFetch('/cart'), apiFetch('/addresses')]);
+  selectedAddr = addresses.find(a=>a.is_default)?.id || addresses[0]?.id || null;
+  renderAddresses();
+
+  const sub = cartItems.reduce((s,i) => s+i.price*i.quantity, 0);
+  const tax = Math.round(sub*0.12);
+  document.getElementById('co-sub').textContent = '₹'+sub.toLocaleString();
+  document.getElementById('co-tax').textContent = '₹'+tax.toLocaleString();
+  document.getElementById('co-total').textContent = '₹'+(sub+tax).toLocaleString();
+  document.getElementById('checkout-items').innerHTML = cartItems.map(i => `
+  <div class="order-item-row">
+    <div class="order-item-thumb" style="background:linear-gradient(135deg,${i.image_color},${i.image_color2})"></div>
+    <div style="flex:1"><div style="font-size:13px;font-weight:500">${i.title}</div><div style="font-size:11px;color:var(--muted)">by ${i.artist} · Qty: ${i.quantity}</div></div>
+    <div style="font-size:14px;font-weight:700">₹${Number(i.price*i.quantity).toLocaleString()}</div>
+  </div>`).join('');
+}
+loadCheckout();
+</script>
+</body>
+</html>

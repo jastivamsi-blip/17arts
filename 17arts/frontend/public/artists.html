@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Featured Artists — 17ARTS</title>
+<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+.artists-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:1100px;margin:0 auto;padding:24px 1.5rem}
+.artist-card{background:#fff;border-radius:12px;border:0.5px solid var(--border);overflow:hidden;transition:box-shadow 0.2s,transform 0.2s;cursor:pointer}
+.artist-card:hover{box-shadow:0 8px 32px rgba(0,0,0,0.1);transform:translateY(-3px)}
+.artist-banner{height:100px;position:relative}
+.artist-avatar{width:72px;height:72px;border-radius:50%;border:3px solid #fff;position:absolute;bottom:-36px;left:20px;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:28px;color:#fff;font-weight:600;box-shadow:0 4px 12px rgba(0,0,0,0.15)}
+.artist-body{padding:46px 20px 20px}
+.artist-name{font-size:17px;font-weight:700;color:var(--ink);margin-bottom:3px}
+.artist-spec{font-size:12px;color:var(--gold);font-weight:500;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px}
+.artist-bio{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:14px}
+.artist-stats{display:flex;gap:16px}
+.a-stat{text-align:center}<div>
+.a-stat-n{font-size:18px;font-weight:700;color:var(--navy);font-family:'Cormorant Garamond',serif}
+.a-stat-l{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px}
+@media(max-width:768px){.artists-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.artists-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div id="navbar"></div>
+
+<div style="background:var(--navy);padding:2.5rem 1.5rem;text-align:center;border-bottom:2px solid var(--gold)">
+  <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:10px">Meet the creators</div>
+  <div style="font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300;color:#fff;margin-bottom:10px">Featured <em style="color:var(--gold-l)">Artists</em></div>
+  <div style="font-size:14px;color:rgba(255,255,255,0.45);max-width:500px;margin:0 auto">India's most celebrated painters, sculptors and craftspeople — all on 17ARTS.</div>
+</div>
+
+<div class="artists-grid" id="artists-grid">
+  <div class="loading" style="grid-column:1/-1"><div class="spinner"></div></div>
+</div>
+
+<div id="footer-wrap"></div>
+<script src="/js/app.js"></script>
+<script>
+document.getElementById('navbar').innerHTML = renderNavbar('artists');
+document.getElementById('footer-wrap').innerHTML = renderFooter();
+
+const artists = [
+  { name:'Meena Sharma', spec:'Traditional · Watercolour', bio:'A master of Indian classical watercolour, Meena has been painting for over 30 years. Her works are held in private collections across India and the UK.', works:18, sold:142, rating:4.8, c1:'#C4A882', c2:'#8B6E4E' },
+  { name:'Arjun Pillai', spec:'Contemporary · Acrylic', bio:'Arjun brings a fresh, urban sensibility to Indian contemporary art. His bold canvases explore the tension between tradition and modernity.', works:24, sold:89, rating:4.6, c1:'#7B9EA6', c2:'#3D6B76' },
+  { name:'Priya Nair', spec:'Heritage · Oil', bio:'Known for luminous oil paintings of Indian spiritual landscapes, Priya's work captures the essence of sacred India with remarkable sensitivity.', works:31, sold:204, rating:4.9, c1:'#B5936B', c2:'#6B4423' },
+  { name:'Vivek Rao', spec:'Abstract · Mixed Media', bio:'Vivek pushes boundaries with his large-scale mixed media installations and canvases. He has exhibited at galleries in Mumbai, Delhi and Singapore.', works:15, sold:67, rating:4.7, c1:'#9B8EC4', c2:'#5A4B99' },
+  { name:'Sunita Devi', spec:'Folk · Madhubani', bio:'A National Award winning Madhubani artist from Bihar, Sunita preserves centuries-old folk traditions while adding her own poetic vision.', works:42, sold:1240, rating:4.9, c1:'#5DCAA5', c2:'#0F6E56' },
+  { name:'Ramesh Jangid', spec:'Traditional · Miniature', bio:'Trained in the Jaipur school of miniature painting, Ramesh is among the finest miniaturists working today. His fine brushwork is extraordinary.', works:56, sold:387, rating:4.9, c1:'#D4A882', c2:'#9B5E3E' },
+];
+
+document.getElementById('artists-grid').innerHTML = artists.map(a => `
+<div class="artist-card" onclick="window.location.href='/collection?search=${encodeURIComponent(a.name)}'">
+  <div class="artist-banner" style="background:linear-gradient(135deg,${a.c1},${a.c2})">
+    <div class="artist-avatar" style="background:linear-gradient(135deg,${a.c2},${a.c1})">${a.name[0]}</div>
+  </div>
+  <div class="artist-body">
+    <div class="artist-name">${a.name}</div>
+    <div class="artist-spec">${a.spec}</div>
+    <div class="artist-bio">${a.bio}</div>
+    <div class="artist-stats">
+      <div class="a-stat"><div class="a-stat-n">${a.works}</div><div class="a-stat-l">Works</div></div>
+      <div class="a-stat"><div class="a-stat-n">${a.sold}</div><div class="a-stat-l">Sold</div></div>
+      <div class="a-stat"><div class="a-stat-n">★${a.rating}</div><div class="a-stat-l">Rating</div></div>
+    </div>
+  </div>
+</div>`).join('');
+</script>
+</body>
+</html>

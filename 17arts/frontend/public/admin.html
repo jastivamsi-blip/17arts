@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin Panel — 17ARTS</title>
+<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+.admin-wrap{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 92px)}
+.admin-sidebar{background:var(--navy);padding:0}
+.admin-logo{padding:16px;border-bottom:1px solid rgba(184,151,42,0.2);display:flex;align-items:center;gap:8px}
+.admin-nav-item{display:flex;align-items:center;gap:10px;padding:12px 18px;font-size:13px;color:rgba(255,255,255,0.5);cursor:pointer;border-left:3px solid transparent;transition:all 0.15s}
+.admin-nav-item:hover{color:#fff;background:rgba(255,255,255,0.04)}
+.admin-nav-item.active{color:var(--gold-l);border-left-color:var(--gold);background:rgba(184,151,42,0.08);font-weight:500}
+.admin-nav-item i{font-size:17px;width:20px}
+.admin-content{background:#f0f2f5;padding:20px;overflow-y:auto}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+.admin-stat{background:#fff;border-radius:8px;border:0.5px solid var(--border);padding:18px;position:relative;overflow:hidden}
+.admin-stat::after{content:attr(data-icon);position:absolute;right:-4px;bottom:-8px;font-size:52px;opacity:0.06}
+.admin-stat-n{font-size:28px;font-weight:700;color:var(--navy);font-family:'Cormorant Garamond',serif}
+.admin-stat-l{font-size:12px;color:var(--muted);margin-top:4px}
+.admin-stat-chg{font-size:11px;color:var(--green);margin-top:6px;font-weight:500}
+.data-table{width:100%;border-collapse:collapse;background:#fff;border-radius:8px;overflow:hidden;border:0.5px solid var(--border)}
+.data-table th{background:var(--navy);color:rgba(255,255,255,0.7);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;padding:11px 14px;text-align:left}
+.data-table td{padding:12px 14px;font-size:13px;border-bottom:1px solid #f5f5f5;vertical-align:middle}
+.data-table tr:hover td{background:#fffdf5}
+.data-table tr:last-child td{border-bottom:none}
+.tbl-wrap{border-radius:8px;overflow:hidden;border:0.5px solid var(--border)}
+.page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.page-title-admin{font-size:20px;font-weight:700;color:var(--ink)}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:500;display:flex;align-items:center;justify-content:center;display:none}
+.modal-box{background:#fff;border-radius:12px;width:90%;max-width:500px;max-height:90vh;overflow-y:auto;padding:24px}
+.modal-title{font-size:18px;font-weight:700;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between}
+select.form-select option{padding:4px}
+@media(max-width:900px){.admin-wrap{grid-template-columns:1fr}.admin-sidebar{display:none}.stats-grid{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div id="navbar"></div>
+
+<div class="admin-wrap">
+  <!-- SIDEBAR -->
+  <div class="admin-sidebar">
+    <div class="admin-logo">
+      <svg width="22" height="22" viewBox="0 0 30 30" fill="none"><path d="M15 1.5L26 6.5L29 17L23 27L15 29L7 27L1 17L4 6.5Z" stroke="#B8972A" stroke-width="1" fill="none" opacity="0.7"/><circle cx="15" cy="15" r="2.5" fill="#D4AF5A"/></svg>
+      <span style="font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--gold-l);font-weight:400">17ARTS Admin</span>
+    </div>
+    <div class="admin-nav-item active" id="an-dashboard" onclick="adminPage('dashboard')"><i class="ti ti-dashboard" aria-hidden="true"></i> Dashboard</div>
+    <div class="admin-nav-item" id="an-artworks" onclick="adminPage('artworks')"><i class="ti ti-palette" aria-hidden="true"></i> Artworks</div>
+    <div class="admin-nav-item" id="an-orders" onclick="adminPage('orders')"><i class="ti ti-package" aria-hidden="true"></i> Orders</div>
+    <div class="admin-nav-item" id="an-users" onclick="adminPage('users')"><i class="ti ti-users" aria-hidden="true"></i> Users</div>
+    <div class="admin-nav-item" style="margin-top:auto;color:rgba(255,255,255,0.3)" onclick="window.location.href='/'"><i class="ti ti-home" aria-hidden="true"></i> Back to Site</div>
+    <div class="admin-nav-item" style="color:rgba(231,76,60,0.7)" onclick="Auth.logout()"><i class="ti ti-logout" aria-hidden="true"></i> Sign Out</div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="admin-content" id="admin-content">
+    <div class="loading"><div class="spinner"></div></div>
+  </div>
+</div>
+
+<!-- ADD/EDIT ARTWORK MODAL -->
+<div class="modal-overlay" id="art-modal">
+  <div class="modal-box">
+    <div class="modal-title">
+      <span id="modal-title-text">Add Artwork</span>
+      <button style="background:none;border:none;cursor:pointer;font-size:20px;color:var(--muted)" onclick="closeModal()">×</button>
+    </div>
+    <div id="modal-alert"></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Title *</label><input class="form-input" id="m-title"></div>
+      <div class="form-group"><label class="form-label">Artist *</label><input class="form-input" id="m-artist"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Category *</label><select class="form-select" id="m-category"><option>Traditional</option><option>Contemporary</option><option>Heritage</option><option>Abstract</option><option>Folk</option></select></div>
+      <div class="form-group"><label class="form-label">Medium</label><input class="form-input" id="m-medium" placeholder="e.g. Oil on Canvas"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Price (₹) *</label><input class="form-input" type="number" id="m-price"></div>
+      <div class="form-group"><label class="form-label">MRP (₹)</label><input class="form-input" type="number" id="m-mrp"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Dimensions</label><input class="form-input" id="m-dim" placeholder='e.g. 24" x 18"'></div>
+      <div class="form-group"><label class="form-label">Stock</label><input class="form-input" type="number" id="m-stock" value="1"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Description</label><textarea class="form-input" id="m-desc" rows="3" style="resize:vertical"></textarea></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Badge</label><input class="form-input" id="m-badge" placeholder="e.g. New, Bestseller"></div>
+      <div class="form-group"><label class="form-label">Theme Color</label><input type="color" id="m-color" value="#C4A882" style="width:100%;height:40px;border-radius:4px;border:1.5px solid var(--border);cursor:pointer"></div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:4px">
+      <button class="btn btn-primary" onclick="saveArtwork()">Save Artwork</button>
+      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script src="/js/app.js"></script>
+<script>
+document.getElementById('navbar').innerHTML = renderNavbar();
+if (!Auth.isLoggedIn() || !Auth.isAdmin()) { toast('Admin access required','error'); setTimeout(() => window.location.href='/signin',1000); }
+
+let editingId = null;
+
+const adminPages = {
+  async dashboard() {
+    const stats = await apiFetch('/admin/stats');
+    document.getElementById('admin-content').innerHTML = `
+    <div class="page-header"><div class="page-title-admin">Dashboard</div><div style="font-size:12px;color:var(--muted)">Welcome back, ${Auth.getUser()?.name}</div></div>
+    <div class="stats-grid">
+      <div class="admin-stat" data-icon="🖼"><div class="admin-stat-n">${stats.artworks}</div><div class="admin-stat-l">Total Artworks</div><div class="admin-stat-chg">↑ Active listings</div></div>
+      <div class="admin-stat" data-icon="📦"><div class="admin-stat-n">${stats.orders}</div><div class="admin-stat-l">Total Orders</div><div class="admin-stat-chg">↑ All time</div></div>
+      <div class="admin-stat" data-icon="👥"><div class="admin-stat-n">${stats.users}</div><div class="admin-stat-l">Registered Users</div><div class="admin-stat-chg">↑ Growing</div></div>
+      <div class="admin-stat" data-icon="₹"><div class="admin-stat-n">₹${(stats.revenue/100000).toFixed(1)}L</div><div class="admin-stat-l">Total Revenue</div><div class="admin-stat-chg">↑ All time sales</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+      <div style="background:#fff;border-radius:8px;border:0.5px solid var(--border);padding:16px">
+        <div style="font-size:14px;font-weight:700;margin-bottom:12px;color:var(--navy)">Quick Actions</div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <button class="btn btn-primary btn-block" onclick="adminPage('artworks');setTimeout(openAddModal,200)"><i class="ti ti-plus" style="font-size:14px;vertical-align:-2px;margin-right:6px" aria-hidden="true"></i> Add New Artwork</button>
+          <button class="btn btn-navy btn-block" onclick="adminPage('orders')"><i class="ti ti-package" style="font-size:14px;vertical-align:-2px;margin-right:6px" aria-hidden="true"></i> Manage Orders</button>
+          <button class="btn btn-outline btn-block" onclick="adminPage('users')"><i class="ti ti-users" style="font-size:14px;vertical-align:-2px;margin-right:6px" aria-hidden="true"></i> View Users</button>
+        </div>
+      </div>
+      <div style="background:#fff;border-radius:8px;border:0.5px solid var(--border);padding:16px">
+        <div style="font-size:14px;font-weight:700;margin-bottom:12px;color:var(--navy)">System Info</div>
+        <div style="font-size:13px;color:#555;line-height:2">
+          <div>🗄 Database: SQLite (sql.js)</div>
+          <div>🔐 Auth: JWT tokens</div>
+          <div>💳 Payments: Razorpay / COD / UPI</div>
+          <div>📱 WhatsApp: Order notifications</div>
+          <div>🚀 Backend: Node.js + Express</div>
+        </div>
+      </div>
+    </div>`;
+  },
+
+  async artworks() {
+    const arts = await apiFetch('/artworks?limit=100');
+    document.getElementById('admin-content').innerHTML = `
+    <div class="page-header">
+      <div class="page-title-admin">Artworks (${arts.length})</div>
+      <button class="btn btn-primary btn-sm" onclick="openAddModal()"><i class="ti ti-plus" style="font-size:13px;vertical-align:-1px;margin-right:4px" aria-hidden="true"></i> Add Artwork</button>
+    </div>
+    <div class="tbl-wrap">
+    <table class="data-table">
+      <thead><tr><th>Artwork</th><th>Category</th><th>Price</th><th>Stock</th><th>Rating</th><th>Actions</th></tr></thead>
+      <tbody>${arts.map(a => `<tr>
+        <td><div style="display:flex;align-items:center;gap:10px"><div style="width:44px;height:44px;border-radius:6px;background:linear-gradient(135deg,${a.image_color},${a.image_color2});flex-shrink:0"></div><div><div style="font-weight:600;font-size:13px">${a.title}</div><div style="font-size:11px;color:var(--muted)">${a.artist}</div></div></div></td>
+        <td><span style="font-size:11px;background:var(--gold-pale);color:var(--gold);padding:2px 8px;border-radius:12px;font-weight:600">${a.category}</span></td>
+        <td><div style="font-weight:600">₹${Number(a.price).toLocaleString()}</div>${a.mrp>a.price?`<div style="font-size:10px;color:var(--muted);text-decoration:line-through">₹${Number(a.mrp).toLocaleString()}</div>`:''}</td>
+        <td><span style="color:${a.stock>0?'var(--green)':'var(--red)';};font-weight:600">${a.stock}</span></td>
+        <td><span style="background:var(--gold);color:#fff;font-size:11px;font-weight:700;padding:2px 6px;border-radius:3px">★ ${a.rating}</span></td>
+        <td><div style="display:flex;gap:6px"><button class="btn btn-outline btn-sm" onclick="editArtwork(${JSON.stringify(a).replace(/"/g,'&quot;')})"><i class="ti ti-edit" style="font-size:13px" aria-hidden="true"></i></button><button class="btn btn-danger btn-sm" onclick="deleteArtwork('${a.id}','${a.title}')"><i class="ti ti-trash" style="font-size:13px" aria-hidden="true"></i></button></div></td>
+      </tr>`).join('')}</tbody>
+    </table></div>`;
+  },
+
+  async orders() {
+    const orders = await apiFetch('/admin/orders');
+    document.getElementById('admin-content').innerHTML = `
+    <div class="page-header"><div class="page-title-admin">Orders (${orders.length})</div></div>
+    <div class="tbl-wrap">
+    <table class="data-table">
+      <thead><tr><th>Order ID</th><th>Customer</th><th>Items</th><th>Total</th><th>Payment</th><th>Status</th><th>Date</th></tr></thead>
+      <tbody>${orders.map(o => `<tr>
+        <td style="font-weight:600;font-family:monospace">#${o.id.slice(0,8).toUpperCase()}</td>
+        <td><div style="font-weight:500">${o.user_name}</div><div style="font-size:11px;color:var(--muted)">${o.email}</div></td>
+        <td>${o.items.map(i=>`<div style="font-size:11px;color:#555">${i.title}</div>`).join('')}</td>
+        <td style="font-weight:700">₹${Number(o.total).toLocaleString()}</td>
+        <td style="font-size:12px">${o.payment_method}</td>
+        <td><select class="form-select" style="font-size:11px;padding:4px 6px;width:auto" onchange="updateOrderStatus('${o.id}',this.value)">
+          ${['Processing','Shipped','Delivered','Cancelled'].map(s=>`<option ${o.status===s?'selected':''}>${s}</option>`).join('')}
+        </select></td>
+        <td style="font-size:12px;color:var(--muted)">${new Date(o.created_at).toLocaleDateString('en-IN')}</td>
+      </tr>`).join('')}</tbody>
+    </table></div>`;
+  },
+
+  async users() {
+    const users = await apiFetch('/admin/users');
+    document.getElementById('admin-content').innerHTML = `
+    <div class="page-header"><div class="page-title-admin">Users (${users.length})</div></div>
+    <div class="tbl-wrap">
+    <table class="data-table">
+      <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Role</th><th>Joined</th></tr></thead>
+      <tbody>${users.map(u => `<tr>
+        <td><div style="display:flex;align-items:center;gap:8px"><div style="width:32px;height:32px;border-radius:50%;background:var(--navy);color:var(--gold-l);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0">${u.name[0].toUpperCase()}</div><span style="font-weight:500">${u.name}</span></div></td>
+        <td>${u.email}</td>
+        <td>${u.phone||'—'}</td>
+        <td><span style="font-size:11px;font-weight:700;padding:3px 8px;border-radius:12px;${u.role==='admin'?'background:#FFF5DC;color:var(--gold)':'background:#E6F1FB;color:#185FA5'}">${u.role}</span></td>
+        <td style="font-size:12px;color:var(--muted)">${new Date(u.created_at).toLocaleDateString('en-IN')}</td>
+      </tr>`).join('')}</tbody>
+    </table></div>`;
+  }
+};
+
+function adminPage(page) {
+  document.querySelectorAll('.admin-nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('an-'+page)?.classList.add('active');
+  adminPages[page]?.();
+}
+
+function openAddModal() {
+  editingId = null;
+  document.getElementById('modal-title-text').textContent = 'Add Artwork';
+  ['m-title','m-artist','m-medium','m-dim','m-badge','m-desc'].forEach(id => document.getElementById(id).value='');
+  document.getElementById('m-price').value='';
+  document.getElementById('m-mrp').value='';
+  document.getElementById('m-stock').value=1;
+  document.getElementById('m-color').value='#C4A882';
+  document.getElementById('modal-alert').innerHTML='';
+  document.getElementById('art-modal').style.display='flex';
+}
+
+function editArtwork(a) {
+  editingId = a.id;
+  document.getElementById('modal-title-text').textContent = 'Edit Artwork';
+  document.getElementById('m-title').value = a.title||'';
+  document.getElementById('m-artist').value = a.artist||'';
+  document.getElementById('m-category').value = a.category||'Traditional';
+  document.getElementById('m-medium').value = a.medium||'';
+  document.getElementById('m-price').value = a.price||'';
+  document.getElementById('m-mrp').value = a.mrp||'';
+  document.getElementById('m-dim').value = a.dimensions||'';
+  document.getElementById('m-stock').value = a.stock||1;
+  document.getElementById('m-desc').value = a.description||'';
+  document.getElementById('m-badge').value = a.badge||'';
+  document.getElementById('m-color').value = a.image_color||'#C4A882';
+  document.getElementById('modal-alert').innerHTML='';
+  document.getElementById('art-modal').style.display='flex';
+}
+
+function closeModal() { document.getElementById('art-modal').style.display='none'; }
+
+async function saveArtwork() {
+  const body = { title:document.getElementById('m-title').value, artist:document.getElementById('m-artist').value, category:document.getElementById('m-category').value, medium:document.getElementById('m-medium').value, price:parseFloat(document.getElementById('m-price').value), mrp:parseFloat(document.getElementById('m-mrp').value)||parseFloat(document.getElementById('m-price').value), dimensions:document.getElementById('m-dim').value, stock:parseInt(document.getElementById('m-stock').value)||1, description:document.getElementById('m-desc').value, badge:document.getElementById('m-badge').value, image_color:document.getElementById('m-color').value };
+  if (!body.title||!body.artist||!body.price) { document.getElementById('modal-alert').innerHTML='<div class="alert alert-error">Title, artist and price are required</div>'; return; }
+  try {
+    if (editingId) await apiFetch(`/artworks/${editingId}`,{method:'PUT',body});
+    else await apiFetch('/artworks',{method:'POST',body});
+    toast(editingId?'Artwork updated!':'Artwork added!');
+    closeModal();
+    adminPages.artworks();
+  } catch(e) { document.getElementById('modal-alert').innerHTML=`<div class="alert alert-error">${e.message}</div>`; }
+}
+
+async function deleteArtwork(id, title) {
+  if (!confirm(`Delete "${title}"? This cannot be undone.`)) return;
+  await apiFetch(`/artworks/${id}`,{method:'DELETE'});
+  toast('Artwork deleted');
+  adminPages.artworks();
+}
+
+async function updateOrderStatus(id, status) {
+  await apiFetch(`/admin/orders/${id}`,{method:'PUT',body:{status}});
+  toast('Order status updated');
+}
+
+window.editArtwork = editArtwork;
+window.deleteArtwork = deleteArtwork;
+window.updateOrderStatus = updateOrderStatus;
+window.openAddModal = openAddModal;
+window.saveArtwork = saveArtwork;
+window.closeModal = closeModal;
+
+adminPage('dashboard');
+</script>
+</body>
+</html>

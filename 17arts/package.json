@@ -1,0 +1,22 @@
+{
+  "name": "17arts",
+  "version": "1.0.0",
+  "description": "17ARTS - India's Premier Art Marketplace",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "engines": {
+    "node": ">=16"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^16.6.1",
+    "express": "^4.22.2",
+    "jsonwebtoken": "^9.0.0",
+    "sql.js": "^1.10.3",
+    "uuid": "^9.0.1"
+  }
+}

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sign In — 17ARTS</title>
+<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+.auth-page{min-height:calc(100vh - 56px - 36px);display:flex;align-items:center;justify-content:center;padding:2rem 1rem;background:linear-gradient(135deg,#f0f2f5 0%,#e8e4dc 100%)}
+.auth-card{background:#fff;border-radius:16px;box-shadow:0 8px 40px rgba(0,0,0,0.12);overflow:hidden;width:100%;max-width:460px}
+.auth-header{background:var(--navy);padding:2rem;text-align:center;border-bottom:2px solid var(--gold)}
+.auth-header svg{width:40px;height:40px;margin-bottom:10px}
+.auth-header .brand{font-family:'Cormorant Garamond',serif;font-size:26px;color:var(--gold-l);font-weight:300}
+.auth-header p{font-size:12px;color:rgba(255,255,255,0.4);margin-top:4px}
+.auth-tabs{display:flex;border-bottom:1px solid var(--border)}
+.auth-tab{flex:1;padding:14px;text-align:center;font-size:14px;font-weight:500;cursor:pointer;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-1px;transition:all 0.15s}
+.auth-tab.active{color:var(--gold);border-bottom-color:var(--gold);font-weight:600}
+.auth-body{padding:1.75rem}
+.or-row{display:flex;align-items:center;gap:10px;margin:16px 0;color:var(--muted);font-size:12px}
+.or-row::before,.or-row::after{content:'';flex:1;height:1px;background:var(--border)}
+.social-btn{width:100%;padding:11px;border:1.5px solid var(--border);border-radius:8px;background:#fff;font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.15s;margin-bottom:10px}
+.social-btn:hover{background:#f9f5ea;border-color:var(--gold)}
+</style>
+</head>
+<body>
+<div id="navbar"></div>
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-header">
+      <svg viewBox="0 0 40 40" fill="none">
+        <path d="M20 2L35 9L38 22L31 35L20 38L9 35L2 22L5 9Z" stroke="#B8972A" stroke-width="1.2" fill="none" opacity="0.6"/>
+        <path d="M20 10L27 20L20 30L13 20Z" stroke="#D4AF5A" stroke-width="1" fill="none"/>
+        <circle cx="20" cy="20" r="3" fill="#D4AF5A"/>
+      </svg>
+      <div class="brand">17ARTS</div>
+      <p>India's Premier Art Marketplace</p>
+    </div>
+
+    <div class="auth-tabs">
+      <div class="auth-tab active" id="tab-signin" onclick="switchTab('signin')">Sign In</div>
+      <div class="auth-tab" id="tab-register" onclick="switchTab('register')">Register</div>
+    </div>
+
+    <!-- SIGN IN -->
+    <div class="auth-body" id="signin-form">
+      <div id="signin-alert"></div>
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input class="form-input" type="email" id="si-email" placeholder="you@example.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input class="form-input" type="password" id="si-pass" placeholder="Your password" onkeydown="if(event.key==='Enter')doSignin()">
+      </div>
+      <div style="text-align:right;margin-top:-8px;margin-bottom:14px"><a style="font-size:12px;color:var(--gold);cursor:pointer">Forgot password?</a></div>
+      <button class="btn btn-primary btn-block" style="font-size:14px;padding:13px" id="signin-btn" onclick="doSignin()">Sign In</button>
+      <div class="or-row">or</div>
+      <div style="font-size:12px;text-align:center;color:var(--muted)">
+        Demo admin: <strong>admin@17arts.in</strong> / <strong>admin123</strong>
+      </div>
+      <div style="text-align:center;margin-top:16px;font-size:13px;color:var(--muted)">Don't have an account? <a onclick="switchTab('register')" style="color:var(--gold);cursor:pointer;font-weight:500">Register here</a></div>
+    </div>
+
+    <!-- REGISTER -->
+    <div class="auth-body" id="register-form" style="display:none">
+      <div id="reg-alert"></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Full Name</label><input class="form-input" id="r-name" placeholder="Your full name"></div>
+        <div class="form-group"><label class="form-label">Phone</label><input class="form-input" id="r-phone" placeholder="+91 9999999999"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Email Address</label><input class="form-input" type="email" id="r-email" placeholder="you@example.com"></div>
+      <div class="form-group"><label class="form-label">Password</label><input class="form-input" type="password" id="r-pass" placeholder="Min. 6 characters"></div>
+      <div class="form-group"><label class="form-label">Confirm Password</label><input class="form-input" type="password" id="r-pass2" placeholder="Repeat password" onkeydown="if(event.key==='Enter')doRegister()"></div>
+      <button class="btn btn-primary btn-block" style="font-size:14px;padding:13px" id="reg-btn" onclick="doRegister()">Create Account</button>
+      <div style="text-align:center;margin-top:16px;font-size:13px;color:var(--muted)">Already have an account? <a onclick="switchTab('signin')" style="color:var(--gold);cursor:pointer;font-weight:500">Sign in</a></div>
+      <div style="margin-top:16px;font-size:11px;color:#aaa;text-align:center">By registering you agree to our Terms of Service and Privacy Policy.</div>
+    </div>
+  </div>
+</div>
+
+<script src="/js/app.js"></script>
+<script>
+document.getElementById('navbar').innerHTML = renderNavbar();
+
+if (Auth.isLoggedIn()) {
+  const redir = new URLSearchParams(window.location.search).get('redirect') || '/';
+  window.location.href = redir;
+}
+
+const urlTab = new URLSearchParams(window.location.search).get('tab');
+if (urlTab === 'register') switchTab('register');
+
+function switchTab(tab) {
+  document.getElementById('signin-form').style.display = tab==='signin' ? 'block' : 'none';
+  document.getElementById('register-form').style.display = tab==='register' ? 'block' : 'none';
+  document.getElementById('tab-signin').classList.toggle('active', tab==='signin');
+  document.getElementById('tab-register').classList.toggle('active', tab==='register');
+}
+
+async function doSignin() {
+  const btn = document.getElementById('signin-btn');
+  const alertEl = document.getElementById('signin-alert');
+  alertEl.innerHTML = '';
+  btn.disabled = true; btn.textContent = 'Signing in…';
+  try {
+    const r = await apiFetch('/auth/login', { method:'POST', body:{ email:document.getElementById('si-email').value, password:document.getElementById('si-pass').value }});
+    Auth.setSession(r.token, r.user);
+    toast('Welcome back, ' + r.user.name + '!');
+    const redir = new URLSearchParams(window.location.search).get('redirect') || '/';
+    setTimeout(() => window.location.href = redir, 800);
+  } catch(e) {
+    alertEl.innerHTML = `<div class="alert alert-error">${e.message}</div>`;
+    btn.disabled = false; btn.textContent = 'Sign In';
+  }
+}
+
+async function doRegister() {
+  const btn = document.getElementById('reg-btn');
+  const alertEl = document.getElementById('reg-alert');
+  alertEl.innerHTML = '';
+  const pass = document.getElementById('r-pass').value;
+  const pass2 = document.getElementById('r-pass2').value;
+  if (pass !== pass2) { alertEl.innerHTML = '<div class="alert alert-error">Passwords do not match</div>'; return; }
+  if (pass.length < 6) { alertEl.innerHTML = '<div class="alert alert-error">Password must be at least 6 characters</div>'; return; }
+  btn.disabled = true; btn.textContent = 'Creating account…';
+  try {
+    const r = await apiFetch('/auth/register', { method:'POST', body:{ name:document.getElementById('r-name').value, email:document.getElementById('r-email').value, password:pass, phone:document.getElementById('r-phone').value }});
+    Auth.setSession(r.token, r.user);
+    toast('Account created! Welcome to 17ARTS!');
+    setTimeout(() => window.location.href = '/', 800);
+  } catch(e) {
+    alertEl.innerHTML = `<div class="alert alert-error">${e.message}</div>`;
+    btn.disabled = false; btn.textContent = 'Create Account';
+  }
+}
+</script>
+</body>
+</html>

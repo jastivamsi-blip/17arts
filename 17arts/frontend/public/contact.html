@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Contact Us — 17ARTS</title>
+<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+.contact-wrap{display:grid;grid-template-columns:1fr 1.5fr;gap:24px;max-width:1000px;margin:0 auto;padding:2.5rem 1.5rem}
+.contact-info-card{background:var(--navy);border-radius:12px;padding:28px;color:#fff}
+.contact-item{display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid rgba(184,151,42,0.15)}
+.contact-item:last-child{border-bottom:none}
+.contact-icon{width:40px;height:40px;border-radius:8px;background:rgba(184,151,42,0.15);display:flex;align-items:center;justify-content:center;color:var(--gold-l);font-size:20px;flex-shrink:0}
+.contact-form-card{background:#fff;border-radius:12px;border:0.5px solid var(--border);padding:28px}
+@media(max-width:768px){.contact-wrap{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div id="navbar"></div>
+<div style="background:var(--navy);padding:2.5rem 1.5rem;text-align:center;border-bottom:2px solid var(--gold)">
+  <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:10px">Get in touch</div>
+  <div style="font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300;color:#fff">Contact <em style="color:var(--gold-l)">17ARTS</em></div>
+</div>
+<div class="contact-wrap">
+  <div class="contact-info-card">
+    <div style="font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--gold-l);font-weight:300;margin-bottom:6px">We'd love to hear from you</div>
+    <div style="font-size:13px;color:rgba(255,255,255,0.4);margin-bottom:20px;line-height:1.6">Whether you have a question about an artwork, need help with an order, or want to sell on 17ARTS — we're here.</div>
+    <div class="contact-item"><div class="contact-icon"><i class="ti ti-phone" aria-hidden="true"></i></div><div><div style="font-size:13px;font-weight:600;margin-bottom:2px">Phone</div><div style="font-size:13px;color:rgba(255,255,255,0.5)">+91 9014422656</div><div style="font-size:11px;color:rgba(255,255,255,0.3);margin-top:2px">Mon–Sat, 10am–6pm IST</div></div></div>
+    <div class="contact-item"><div class="contact-icon"><i class="ti ti-mail" aria-hidden="true"></i></div><div><div style="font-size:13px;font-weight:600;margin-bottom:2px">Email</div><div style="font-size:13px;color:rgba(255,255,255,0.5)">support@17arts.in</div><div style="font-size:11px;color:rgba(255,255,255,0.3);margin-top:2px">Response within 24 hours</div></div></div>
+    <div class="contact-item"><div class="contact-icon"><i class="ti ti-map-pin" aria-hidden="true"></i></div><div><div style="font-size:13px;font-weight:600;margin-bottom:2px">Location</div><div style="font-size:13px;color:rgba(255,255,255,0.5)">Hyderabad, Telangana, India</div></div></div>
+    <div class="contact-item"><div class="contact-icon" style="background:#E8F9EE;color:#25D366"><i class="ti ti-brand-whatsapp" aria-hidden="true"></i></div><div><div style="font-size:13px;font-weight:600;margin-bottom:2px">WhatsApp</div><div style="font-size:13px;color:rgba(255,255,255,0.5)">+91 9014422656</div><div style="font-size:11px;color:rgba(255,255,255,0.3);margin-top:2px">Quick responses on WhatsApp</div></div></div>
+  </div>
+  <div class="contact-form-card">
+    <div style="font-size:18px;font-weight:700;margin-bottom:20px">Send us a Message</div>
+    <div id="contact-alert"></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Your Name</label><input class="form-input" id="c-name" placeholder="Full name"></div>
+      <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" id="c-email" placeholder="you@example.com"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Phone (optional)</label><input class="form-input" id="c-phone" placeholder="+91 9999999999"></div>
+    <div class="form-group"><label class="form-label">Subject</label><select class="form-select" id="c-subject"><option>General Enquiry</option><option>Order Support</option><option>Custom Commission</option><option>Sell on 17ARTS</option><option>Partnership</option></select></div>
+    <div class="form-group"><label class="form-label">Message</label><textarea class="form-input" id="c-message" rows="5" placeholder="Tell us how we can help you…" style="resize:vertical"></textarea></div>
+    <button class="btn btn-primary btn-block" style="font-size:14px;padding:13px" onclick="submitContact()">
+      <i class="ti ti-send" style="font-size:15px;vertical-align:-2px;margin-right:6px" aria-hidden="true"></i> Send Message
+    </button>
+  </div>
+</div>
+<div id="footer-wrap"></div>
+<script src="/js/app.js"></script>
+<script>
+document.getElementById('navbar').innerHTML = renderNavbar('contact');
+document.getElementById('footer-wrap').innerHTML = renderFooter();
+function submitContact() {
+  const name = document.getElementById('c-name').value;
+  const email = document.getElementById('c-email').value;
+  const message = document.getElementById('c-message').value;
+  if (!name||!email||!message) { toast('Please fill all required fields','error'); return; }
+  document.getElementById('contact-alert').innerHTML = '<div class="alert alert-success"><strong>Message sent!</strong> We\'ll get back to you within 24 hours. Thank you!</div>';
+  ['c-name','c-email','c-phone','c-message'].forEach(id => document.getElementById(id).value='');
+}
+</script>
+</body>
+</html>

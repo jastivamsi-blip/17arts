@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Artwork Detail — 17ARTS</title>
+<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+.detail-wrap{max-width:1100px;margin:0 auto;padding:24px 1.5rem 100px;display:grid;grid-template-columns:1fr 420px;gap:2rem}
+.art-display{position:sticky;top:90px;height:fit-content}
+.art-main{width:100%;padding-bottom:100%;position:relative;border-radius:12px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.15);margin-bottom:12px}
+.art-main-inner{position:absolute;inset:0}
+.art-thumbs{display:flex;gap:8px}
+.art-thumb-sm{width:70px;height:70px;border-radius:6px;cursor:pointer;border:2px solid transparent;transition:border-color 0.15s;overflow:hidden}
+.art-thumb-sm.active{border-color:var(--gold)}
+.detail-right{}
+.artwork-cat{font-size:11px;color:var(--gold);text-transform:uppercase;letter-spacing:1.5px;font-weight:600;margin-bottom:8px}
+.artwork-title{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:400;color:var(--ink);line-height:1.2;margin-bottom:6px}
+.artwork-artist{font-size:14px;color:var(--muted);margin-bottom:14px}
+.artwork-artist a{color:var(--gold);font-weight:500;cursor:pointer}
+.rating-row{display:flex;align-items:center;gap:10px;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+.big-stars{color:var(--gold);font-size:16px;letter-spacing:2px}
+.price-block{margin-bottom:20px}
+.big-price{font-size:32px;font-weight:700;color:var(--ink)}
+.price-meta{display:flex;align-items:center;gap:10px;margin-top:4px;flex-wrap:wrap}
+.big-mrp{font-size:15px;color:#aaa;text-decoration:line-through}
+.big-off{font-size:14px;color:var(--green);font-weight:600;background:#EAF3DE;padding:2px 8px;border-radius:3px}
+.saving{font-size:13px;color:var(--green)}
+.detail-meta{background:#f9f9f9;border-radius:8px;padding:14px;margin-bottom:18px}
+.meta-row{display:flex;align-items:center;gap:8px;font-size:13px;padding:4px 0}
+.meta-label{color:var(--muted);width:100px;flex-shrink:0}
+.meta-val{color:var(--ink);font-weight:500}
+.qty-row{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.qty-ctrl{display:flex;align-items:center;border:1.5px solid var(--border);border-radius:6px;overflow:hidden}
+.qty-btn{width:34px;height:36px;border:none;background:#f5f5f5;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.15s}
+.qty-btn:hover{background:var(--gold-pale)}
+.qty-num{width:44px;text-align:center;font-size:14px;font-weight:600;border:none;background:#fff;outline:none}
+.action-btns{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
+.btn-wish{background:#fff;color:var(--gold);border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;gap:6px}
+.btn-wish:hover{background:var(--gold-pale)}
+.btn-wish.liked{background:var(--gold);color:#fff}
+.delivery-info{background:#EAF3DE;border-radius:8px;padding:12px;margin-bottom:16px;font-size:13px;color:#2a5a0a;display:flex;align-items:flex-start;gap:8px}
+.tabs{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:16px}
+.tab{font-size:13px;font-weight:500;padding:10px 18px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;color:var(--muted);transition:all 0.15s}
+.tab.active{color:var(--gold);border-bottom-color:var(--gold);font-weight:600}
+.tab-content{display:none;font-size:14px;color:#374151;line-height:1.7}
+.tab-content.active{display:block}
+.related-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px}
+@media(max-width:900px){.detail-wrap{grid-template-columns:1fr}.art-display{position:static}.related-grid{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div id="navbar"></div>
+
+<div style="background:#fff;padding:8px 1.5rem;border-bottom:1px solid var(--border)">
+  <div class="breadcrumb">
+    <a onclick="window.location.href='/'">Home</a><span class="sep">/</span>
+    <a onclick="window.location.href='/collection'">Collection</a><span class="sep">/</span>
+    <span id="bc-title">Loading…</span>
+  </div>
+</div>
+
+<div class="detail-wrap" id="detail-wrap">
+  <div class="loading"><div class="spinner"></div></div>
+</div>
+
+<div style="max-width:1100px;margin:0 auto;padding:0 1.5rem 100px">
+  <div class="sec-head" style="margin-top:0"><div class="sec-title"><span class="dot"></span> You May Also Like</div><span class="see-all" onclick="window.location.href='/collection'">See all →</span></div>
+  <div class="related-grid" id="related-grid"></div>
+</div>
+
+<div id="footer-wrap"></div>
+<script src="/js/app.js"></script>
+<script>
+document.getElementById('navbar').innerHTML = renderNavbar();
+document.getElementById('footer-wrap').innerHTML = renderFooter();
+
+const id = new URLSearchParams(window.location.search).get('id');
+let qty = 1;
+let artwork = null;
+let isWishlisted = false;
+
+function starsHtml(rating) {
+  const full = Math.round(rating);
+  return '★'.repeat(full) + '☆'.repeat(5-full);
+}
+
+async function loadProduct() {
+  if (!id) { document.getElementById('detail-wrap').innerHTML = '<div class="loading"><p>Product not found.</p></div>'; return; }
+  try {
+    artwork = await apiFetch(`/artworks/${id}`);
+    document.title = `${artwork.title} — 17ARTS`;
+    document.getElementById('bc-title').textContent = artwork.title;
+
+    // Check wishlist
+    if (Auth.isLoggedIn()) {
+      try { const w = await apiFetch('/wishlist'); isWishlisted = w.some(i => i.id === artwork.id); } catch {}
+    }
+
+    const disc = artwork.mrp > artwork.price ? Math.round((1-artwork.price/artwork.mrp)*100) : 0;
+    const saving = artwork.mrp > artwork.price ? Math.round(artwork.mrp - artwork.price) : 0;
+
+    document.getElementById('detail-wrap').innerHTML = `
+    <div class="art-display">
+      <div class="art-main">
+        <div class="art-main-inner" style="background:linear-gradient(135deg,${artwork.image_color},${artwork.image_color2})"></div>
+      </div>
+      <div class="art-thumbs">
+        <div class="art-thumb-sm active" style="background:linear-gradient(135deg,${artwork.image_color},${artwork.image_color2})"></div>
+        <div class="art-thumb-sm" style="background:linear-gradient(225deg,${artwork.image_color},${artwork.image_color2})"></div>
+        <div class="art-thumb-sm" style="background:linear-gradient(45deg,${artwork.image_color2},${artwork.image_color})"></div>
+      </div>
+    </div>
+
+    <div class="detail-right">
+      <div class="artwork-cat">${artwork.category} · ${artwork.medium || ''}</div>
+      <div class="artwork-title">${artwork.title}</div>
+      <div class="artwork-artist">by <a>${artwork.artist}</a></div>
+
+      <div class="rating-row">
+        <span class="big-stars">${starsHtml(artwork.rating)}</span>
+        <span style="font-size:14px;font-weight:600">${artwork.rating}</span>
+        <span style="font-size:13px;color:var(--muted)">(${Number(artwork.reviews).toLocaleString()} reviews)</span>
+        ${artwork.stock > 0 ? '<span style="font-size:12px;color:var(--green);font-weight:600;margin-left:auto"><i class="ti ti-check" aria-hidden="true"></i> In Stock</span>' : '<span style="font-size:12px;color:var(--red);font-weight:600;margin-left:auto">Out of Stock</span>'}
+      </div>
+
+      <div class="price-block">
+        <div class="big-price">₹${Number(artwork.price).toLocaleString()}</div>
+        <div class="price-meta">
+          ${disc>0 ? `<span class="big-mrp">₹${Number(artwork.mrp).toLocaleString()}</span><span class="big-off">${disc}% off</span>` : ''}
+          ${saving>0 ? `<span class="saving">You save ₹${Number(saving).toLocaleString()}</span>` : ''}
+        </div>
+      </div>
+
+      <div class="detail-meta">
+        <div class="meta-row"><span class="meta-label">Artist</span><span class="meta-val">${artwork.artist}</span></div>
+        <div class="meta-row"><span class="meta-label">Category</span><span class="meta-val">${artwork.category}</span></div>
+        <div class="meta-row"><span class="meta-label">Medium</span><span class="meta-val">${artwork.medium || '—'}</span></div>
+        <div class="meta-row"><span class="meta-label">Dimensions</span><span class="meta-val">${artwork.dimensions || '—'}</span></div>
+        <div class="meta-row"><span class="meta-label">Availability</span><span class="meta-val" style="color:var(--green)">${artwork.stock > 0 ? `${artwork.stock} available` : 'Sold out'}</span></div>
+      </div>
+
+      <div class="qty-row">
+        <span style="font-size:13px;font-weight:500;color:#374151">Quantity:</span>
+        <div class="qty-ctrl">
+          <button class="qty-btn" onclick="changeQty(-1)">−</button>
+          <input class="qty-num" id="qty-input" type="number" value="1" min="1" max="${artwork.stock}" readonly>
+          <button class="qty-btn" onclick="changeQty(1)">+</button>
+        </div>
+      </div>
+
+      <div class="action-btns">
+        <button class="btn btn-primary btn-block" style="font-size:14px;padding:14px" onclick="handleAddToCart()">
+          <i class="ti ti-shopping-cart" style="font-size:16px;vertical-align:-2px;margin-right:6px" aria-hidden="true"></i> Add to Cart
+        </button>
+        <button class="btn btn-wish btn-block" id="wish-toggle-btn" onclick="handleWishlist()" style="font-size:14px;padding:13px">
+          <i class="ti ti-heart" style="font-size:16px" aria-hidden="true"></i>
+          <span id="wish-label">${isWishlisted ? 'Remove from Wishlist' : 'Add to Wishlist'}</span>
+        </button>
+      </div>
+
+      <div class="delivery-info">
+        <i class="ti ti-truck" style="font-size:18px;margin-top:1px" aria-hidden="true"></i>
+        <div><strong>Free Delivery</strong> — Estimated delivery in 3–7 business days.<br>Easy 7-day returns. Authenticity certificate included.</div>
+      </div>
+
+      <div class="tabs">
+        <div class="tab active" onclick="showTab('desc',this)">Description</div>
+        <div class="tab" onclick="showTab('details',this)">Details</div>
+        <div class="tab" onclick="showTab('returns',this)">Returns</div>
+      </div>
+      <div class="tab-content active" id="tab-desc">${artwork.description || 'A beautiful, one-of-a-kind artwork created by a celebrated Indian artist. Each piece comes with an authenticity certificate and is carefully packaged for safe delivery.'}</div>
+      <div class="tab-content" id="tab-details">
+        <ul style="padding-left:18px">
+          <li>Original artwork — one of a kind</li>
+          <li>Medium: ${artwork.medium || 'As described'}</li>
+          <li>Dimensions: ${artwork.dimensions || 'Contact us for exact measurements'}</li>
+          <li>Ships with authenticity certificate</li>
+          <li>Professional packaging with foam protection</li>
+          <li>Artist: ${artwork.artist}</li>
+        </ul>
+      </div>
+      <div class="tab-content" id="tab-returns">
+        <p>We offer a 7-day return policy on all artworks. If you are not satisfied with your purchase, contact us at <strong>support@17arts.in</strong> or call <strong>+91 9014422656</strong>. The artwork must be returned in original condition with all packaging.</p>
+      </div>
+    </div>`;
+
+    // Tabs init
+    function showTab(name, el) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+      document.getElementById('tab-' + name).classList.add('active');
+    }
+    window.showTab = showTab;
+
+    // Load related
+    const related = await apiFetch(`/artworks?category=${encodeURIComponent(artwork.category)}&limit=4`);
+    const wishSet = new Set();
+    document.getElementById('related-grid').innerHTML = related.filter(a => a.id !== artwork.id).slice(0,4).map(a => prodCard(a, wishSet)).join('');
+
+  } catch(e) {
+    document.getElementById('detail-wrap').innerHTML = `<div class="loading"><p>Error loading product: ${e.message}</p></div>`;
+  }
+}
+
+function changeQty(delta) {
+  const max = artwork?.stock || 1;
+  qty = Math.max(1, Math.min(max, qty + delta));
+  const el = document.getElementById('qty-input');
+  if (el) el.value = qty;
+}
+
+async function handleAddToCart() {
+  if (!artwork) return;
+  await addToCart(artwork.id, qty);
+}
+
+async function handleWishlist() {
+  if (!artwork) return;
+  if (!Auth.isLoggedIn()) { toast('Please sign in', 'info'); return; }
+  const r = await apiFetch(`/wishlist/${artwork.id}`, { method: 'POST' });
+  isWishlisted = r.wishlisted;
+  const btn = document.getElementById('wish-toggle-btn');
+  const lbl = document.getElementById('wish-label');
+  if (btn) btn.classList.toggle('liked', isWishlisted);
+  if (lbl) lbl.textContent = isWishlisted ? 'Remove from Wishlist' : 'Add to Wishlist';
+  toast(isWishlisted ? 'Added to wishlist' : 'Removed from wishlist');
+  updateWishCount();
+}
+
+window.changeQty = changeQty;
+window.handleAddToCart = handleAddToCart;
+window.handleWishlist = handleWishlist;
+
+loadProduct();
+</script>
+</body>
+</html>

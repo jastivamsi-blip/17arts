@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Commission Art — 17ARTS</title>
+<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+.commission-wrap{max-width:900px;margin:0 auto;padding:2.5rem 1.5rem}
+.steps-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:2rem 0}
+.step-card{background:#fff;border-radius:10px;border:0.5px solid var(--border);padding:20px;text-align:center;position:relative}
+.step-num{width:36px;height:36px;border-radius:50%;background:var(--gold);color:var(--navy);font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
+.step-card::after{content:'→';position:absolute;right:-14px;top:50%;transform:translateY(-50%);font-size:18px;color:var(--gold);display:none}
+@media(min-width:700px){.step-card:not(:last-child)::after{display:block}}
+.commission-form{background:#fff;border-radius:12px;border:0.5px solid var(--border);padding:28px}
+@media(max-width:600px){.steps-row{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div id="navbar"></div>
+<div style="background:var(--navy);padding:2.5rem 1.5rem;text-align:center;border-bottom:2px solid var(--gold)">
+  <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:10px">Custom Artwork</div>
+  <div style="font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300;color:#fff;margin-bottom:10px">Commission <em style="color:var(--gold-l)">Your Art</em></div>
+  <div style="font-size:14px;color:rgba(255,255,255,0.45);max-width:520px;margin:0 auto">Work directly with India's finest artists to create a one-of-a-kind artwork made just for you.</div>
+</div>
+
+<div class="commission-wrap">
+  <div class="steps-row">
+    <div class="step-card"><div class="step-num">1</div><div style="font-size:13px;font-weight:600;margin-bottom:4px">Submit Brief</div><div style="font-size:12px;color:var(--muted)">Describe your vision, size and budget</div></div>
+    <div class="step-card"><div class="step-num">2</div><div style="font-size:13px;font-weight:600;margin-bottom:4px">Artist Match</div><div style="font-size:12px;color:var(--muted)">We match you with the perfect artist</div></div>
+    <div class="step-card"><div class="step-num">3</div><div style="font-size:13px;font-weight:600;margin-bottom:4px">Review Sketch</div><div style="font-size:12px;color:var(--muted)">Approve the initial sketch & concept</div></div>
+    <div class="step-card"><div class="step-num">4</div><div style="font-size:13px;font-weight:600;margin-bottom:4px">Receive Art</div><div style="font-size:12px;color:var(--muted)">Your artwork delivered safely to you</div></div>
+  </div>
+
+  <div class="commission-form">
+    <div style="font-size:20px;font-weight:700;margin-bottom:4px">Request a Commission</div>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:20px">Fill in the form below and our team will get back to you within 24 hours.</div>
+    <div id="comm-alert"></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Your Name *</label><input class="form-input" id="cm-name" placeholder="Full name"></div>
+      <div class="form-group"><label class="form-label">Email *</label><input class="form-input" type="email" id="cm-email" placeholder="you@example.com"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Phone</label><input class="form-input" id="cm-phone" placeholder="+91 9999999999"></div>
+      <div class="form-group"><label class="form-label">Art Style *</label>
+        <select class="form-select" id="cm-style">
+          <option value="">Select style…</option>
+          <option>Traditional / Classical</option><option>Contemporary</option><option>Heritage / Folk</option><option>Abstract</option><option>Portraits</option><option>Landscapes</option><option>Miniature</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Approximate Size</label>
+        <select class="form-select" id="cm-size">
+          <option>Small (up to 12" × 12")</option><option>Medium (12"–24")</option><option>Large (24"–36")</option><option>Extra Large (36"+)</option><option>Custom — I'll describe below</option>
+        </select>
+      </div>
+      <div class="form-group"><label class="form-label">Budget Range *</label>
+        <select class="form-select" id="cm-budget">
+          <option value="">Select budget…</option>
+          <option>₹5,000 – ₹15,000</option><option>₹15,000 – ₹30,000</option><option>₹30,000 – ₹60,000</option><option>₹60,000 – ₹1,00,000</option><option>₹1,00,000+</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group"><label class="form-label">Timeline</label>
+      <select class="form-select" id="cm-timeline">
+        <option>Flexible (1–3 months)</option><option>2 weeks</option><option>1 month</option><option>Urgent (within 2 weeks — extra charges apply)</option>
+      </select>
+    </div>
+    <div class="form-group"><label class="form-label">Describe Your Vision *</label><textarea class="form-input" id="cm-desc" rows="5" placeholder="Tell us about the artwork you have in mind — subject, mood, colours, any references or inspiration…" style="resize:vertical"></textarea></div>
+    <button class="btn btn-primary btn-block" style="font-size:14px;padding:14px" onclick="submitCommission()">
+      <i class="ti ti-palette" style="font-size:15px;vertical-align:-2px;margin-right:6px" aria-hidden="true"></i> Submit Commission Request
+    </button>
+    <div style="text-align:center;margin-top:12px;font-size:12px;color:var(--muted)">We'll respond within 24 hours. Commission starts from ₹5,000.</div>
+  </div>
+</div>
+<div id="footer-wrap"></div>
+<script src="/js/app.js"></script>
+<script>
+document.getElementById('navbar').innerHTML = renderNavbar('commission');
+document.getElementById('footer-wrap').innerHTML = renderFooter();
+function submitCommission() {
+  const name = document.getElementById('cm-name').value;
+  const email = document.getElementById('cm-email').value;
+  const style = document.getElementById('cm-style').value;
+  const budget = document.getElementById('cm-budget').value;
+  const desc = document.getElementById('cm-desc').value;
+  if (!name||!email||!style||!budget||!desc) { toast('Please fill all required fields','error'); return; }
+  document.getElementById('comm-alert').innerHTML = `<div class="alert alert-success"><strong>Commission request submitted!</strong> Our team will contact you at <strong>${email}</strong> within 24 hours. Thank you!</div>`;
+  document.getElementById('cm-desc').value='';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>17ARTS — India's Premier Art Marketplace</title>
+<meta name="description" content="Discover and buy authentic Indian artworks. Traditional, contemporary, folk and heritage paintings. Free delivery across India.">
+<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+.hero{background:linear-gradient(110deg,#0E1B2E 0%,#1A2D47 55%,#243B55 100%);padding:2rem 1.5rem;display:flex;gap:1.5rem;align-items:center;position:relative;overflow:hidden;min-height:190px}
+.hero::before{content:'';position:absolute;right:-60px;top:-60px;width:320px;height:320px;border:1px solid rgba(184,151,42,0.08);border-radius:50%;pointer-events:none}
+.hero-tag{display:inline-block;background:rgba(184,151,42,0.15);border:1px solid rgba(184,151,42,0.4);color:#D4AF5A;font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;padding:4px 12px;border-radius:2px;margin-bottom:12px}
+.hero-h{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:300;color:#fff;line-height:1.15;margin-bottom:8px}
+.hero-h span{color:#D4AF5A;font-style:italic}
+.hero-sub{font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:18px;line-height:1.6;max-width:380px}
+.hero-btns{display:flex;gap:10px;flex-wrap:wrap}
+.hero-side{display:flex;gap:10px;flex-shrink:0}
+.hero-deal-col{display:flex;flex-direction:column;gap:6px;width:88px}
+.deal-card{background:rgba(255,255,255,0.06);border:0.5px solid rgba(184,151,42,0.25);border-radius:4px;padding:8px;text-align:center;cursor:pointer}
+.deal-pct{font-size:16px;font-weight:700;color:#D4AF5A}
+.deal-lbl{font-size:9px;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.8px}
+.hero-arts{display:flex;gap:8px}
+.hero-art{width:80px;aspect-ratio:3/4;border-radius:6px;border:1px solid rgba(184,151,42,0.2)}
+
+.cat-row{background:#fff;padding:16px 1.5rem;border-bottom:1px solid #eee}
+.cat-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:8px}
+.cat-item{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;padding:8px 4px;border-radius:6px;transition:background 0.15s}
+.cat-item:hover{background:#fffdf5}
+.cat-icon{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;border:1.5px solid #eee}
+.cat-name{font-size:11px;text-align:center;color:#333;font-weight:500}
+
+.flash-header{background:linear-gradient(90deg,#0E1B2E,#1A2D47);border-radius:8px 8px 0 0;padding:14px 18px;display:flex;align-items:center;justify-content:space-between}
+.flash-title{font-size:17px;font-weight:700;color:#D4AF5A;display:flex;align-items:center;gap:8px}
+.flash-timer{display:flex;gap:4px;align-items:center}
+.ft-box{background:#D4AF5A;color:#0E1B2E;font-size:14px;font-weight:800;padding:3px 8px;border-radius:3px;min-width:30px;text-align:center}
+.ft-sep{color:#D4AF5A;font-weight:700;font-size:16px}
+.flash-grid{display:grid;grid-template-columns:repeat(5,1fr);border:1px solid #e8e8e8;border-top:none;border-radius:0 0 8px 8px;overflow:hidden;background:#fff}
+.flash-item{padding:14px 10px 12px;border-right:1px solid #f0f0f0;cursor:pointer;transition:background 0.15s;text-align:center}
+.flash-item:last-child{border-right:none}
+.flash-item:hover{background:#fffdf5}
+.flash-img{width:70px;height:70px;border-radius:6px;margin:0 auto 8px}
+.flash-off{font-size:15px;font-weight:800;color:#E24B4A;margin-bottom:3px}
+.flash-name{font-size:11px;color:#333;font-weight:500;margin-bottom:4px;height:30px;overflow:hidden;line-height:1.4}
+.flash-price{font-size:14px;font-weight:700}
+.flash-mrp{font-size:10px;color:#aaa;text-decoration:line-through}
+.bar-wrap{background:#f0f0f0;border-radius:4px;height:4px;margin-top:6px;overflow:hidden}
+.bar-fill{background:#E24B4A;height:100%;border-radius:4px}
+.sold-txt{font-size:9px;color:#E24B4A;margin-top:4px;font-weight:600}
+
+.section-wrap{background:#fff;padding:16px 1.5rem;margin-bottom:8px}
+.prod-grid-5{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.gap-8{height:8px;background:#f0f2f5}
+
+.timer-live{display:flex;gap:4px;align-items:center}
+.t-box{background:#0E1B2E;color:#D4AF5A;font-size:12px;font-weight:700;padding:2px 6px;border-radius:2px;min-width:26px;text-align:center}
+.t-sep{color:#0E1B2E;font-weight:700}
+</style>
+</head>
+<body>
+<div id="navbar"></div>
+
+<!-- HERO BANNER -->
+<div class="hero">
+  <div style="flex:1;z-index:1">
+    <div class="hero-tag">Limited Time Offer</div>
+    <div class="hero-h">Where <span>Art</span> Finds<br>Its Collector</div>
+    <div class="hero-sub">Discover museum-quality paintings from India's most celebrated artists. Free delivery. Authenticity guaranteed.</div>
+    <div class="hero-btns">
+      <button class="btn btn-primary" onclick="window.location.href='/collection'">Explore Collection</button>
+      <button class="btn btn-outline" onclick="window.location.href='/commission'">Commission Art</button>
+    </div>
+  </div>
+  <div class="hero-side">
+    <div class="hero-deal-col">
+      <div class="deal-card" onclick="window.location.href='/collection?cat=Traditional'"><div class="deal-pct">40%</div><div class="deal-lbl">Traditional</div></div>
+      <div class="deal-card" onclick="window.location.href='/collection?cat=Abstract'"><div class="deal-pct">30%</div><div class="deal-lbl">Abstract</div></div>
+      <div class="deal-card" onclick="window.location.href='/collection?cat=Folk'"><div class="deal-pct">35%</div><div class="deal-lbl">Folk</div></div>
+    </div>
+    <div class="hero-arts">
+      <div class="hero-art" style="background:linear-gradient(160deg,#C4A882,#8B6E4E)"></div>
+      <div class="hero-art" style="background:linear-gradient(160deg,#7B9EA6,#3D6B76)"></div>
+    </div>
+  </div>
+</div>
+
+<!-- OFFER STRIP -->
+<div class="offer-strip">
+  <div class="offer-item"><div class="offer-icon"><i class="ti ti-truck" aria-hidden="true"></i></div><div><div class="offer-title">Free Delivery</div><div class="offer-sub">On all artworks across India</div></div></div>
+  <div class="offer-item"><div class="offer-icon"><i class="ti ti-shield-check" aria-hidden="true"></i></div><div><div class="offer-title">100% Authentic</div><div class="offer-sub">Certified original artworks</div></div></div>
+  <div class="offer-item"><div class="offer-icon"><i class="ti ti-refresh" aria-hidden="true"></i></div><div><div class="offer-title">Easy Returns</div><div class="offer-sub">7-day hassle-free returns</div></div></div>
+  <div class="offer-item"><div class="offer-icon" style="background:#E8F9EE;color:#25D366"><i class="ti ti-brand-whatsapp" aria-hidden="true"></i></div><div><div class="offer-title">WhatsApp Updates</div><div class="offer-sub">Instant order notifications</div></div></div>
+</div>
+
+<!-- CATEGORIES -->
+<div class="cat-row">
+  <div class="sec-head"><div class="sec-title"><span class="dot"></span> Shop by Category</div><span class="see-all" onclick="window.location.href='/collection'">See all →</span></div>
+  <div class="cat-grid">
+    <div class="cat-item" onclick="window.location.href='/collection?cat=Traditional'"><div class="cat-icon" style="background:#FFF5DC"><i class="ti ti-palette" style="font-size:22px;color:#B8972A" aria-hidden="true"></i></div><div class="cat-name">Traditional</div></div>
+    <div class="cat-item" onclick="window.location.href='/collection?cat=Contemporary'"><div class="cat-icon" style="background:#EAF3DE"><i class="ti ti-brush" style="font-size:22px;color:#3B6D11" aria-hidden="true"></i></div><div class="cat-name">Contemporary</div></div>
+    <div class="cat-item" onclick="window.location.href='/collection?cat=Heritage'"><div class="cat-icon" style="background:#E6F1FB"><i class="ti ti-building" style="font-size:22px;color:#185FA5" aria-hidden="true"></i></div><div class="cat-name">Heritage</div></div>
+    <div class="cat-item" onclick="window.location.href='/collection?cat=Abstract'"><div class="cat-icon" style="background:#EEEDFE"><i class="ti ti-geometry" style="font-size:22px;color:#534AB7" aria-hidden="true"></i></div><div class="cat-name">Abstract</div></div>
+    <div class="cat-item" onclick="window.location.href='/collection?cat=Folk'"><div class="cat-icon" style="background:#E1F5EE"><i class="ti ti-leaf" style="font-size:22px;color:#0F6E56" aria-hidden="true"></i></div><div class="cat-name">Folk</div></div>
+    <div class="cat-item" onclick="window.location.href='/commission'"><div class="cat-icon" style="background:#FBEAF0"><i class="ti ti-pencil" style="font-size:22px;color:#993556" aria-hidden="true"></i></div><div class="cat-name">Commission</div></div>
+    <div class="cat-item" onclick="window.location.href='/artists'"><div class="cat-icon" style="background:#FAECE7"><i class="ti ti-users" style="font-size:22px;color:#993C1D" aria-hidden="true"></i></div><div class="cat-name">Artists</div></div>
+    <div class="cat-item"><div class="cat-icon" style="background:#FFF5DC"><i class="ti ti-gift" style="font-size:22px;color:#B8972A" aria-hidden="true"></i></div><div class="cat-name">Gift Cards</div></div>
+  </div>
+</div>
+
+<div class="gap-8"></div>
+
+<!-- DEALS OF THE DAY -->
+<div class="section-wrap">
+  <div class="sec-head">
+    <div class="sec-title"><span class="dot"></span> Deals of the Day</div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <span style="font-size:12px;color:#666">Ends in</span>
+      <div class="timer-live"><span class="t-box" id="t-h">08</span><span class="t-sep">:</span><span class="t-box" id="t-m">45</span><span class="t-sep">:</span><span class="t-box" id="t-s">22</span></div>
+      <span class="see-all" onclick="window.location.href='/collection'">See all →</span>
+    </div>
+  </div>
+  <div class="prod-grid-5" id="deals-grid"><div class="loading"><div class="spinner"></div></div></div>
+</div>
+
+<div class="gap-8"></div>
+
+<!-- FLASH SALE -->
+<div style="padding:0 1.5rem;margin-bottom:8px">
+  <div class="flash-header">
+    <div class="flash-title"><i class="ti ti-bolt" aria-hidden="true"></i> Flash Sale</div>
+    <div class="flash-timer"><span style="font-size:12px;color:rgba(212,175,90,0.6);margin-right:4px">Ends in</span>
+      <span class="ft-box" id="f-h">01</span><span class="ft-sep">:</span><span class="ft-box" id="f-m">22</span><span class="ft-sep">:</span><span class="ft-box" id="f-s">47</span>
+    </div>
+  </div>
+  <div class="flash-grid" id="flash-grid"><div class="loading" style="grid-column:1/-1"><div class="spinner"></div></div></div>
+</div>
+
+<div class="gap-8"></div>
+
+<!-- NEW ARRIVALS -->
+<div class="section-wrap">
+  <div class="sec-head"><div class="sec-title"><span class="dot"></span> New Arrivals</div><span class="see-all" onclick="window.location.href='/collection?sort=newest'">See all →</span></div>
+  <div class="prod-grid-5" id="new-grid"><div class="loading"><div class="spinner"></div></div></div>
+</div>
+
+<div id="footer-wrap"></div>
+
+<!-- CART BAR -->
+<div class="cart-sticky" id="cart-sticky" style="display:none">
+  <div><span style="font-size:13px;color:#666"><span id="cs-count">0</span> items in cart</span></div>
+  <div style="display:flex;align-items:center;gap:16px">
+    <div><div style="font-size:11px;color:#888">Total</div><div style="font-size:17px;font-weight:700">₹<span id="cs-total">0</span></div></div>
+    <button class="btn btn-primary" onclick="window.location.href='/cart'">Go to Cart →</button>
+  </div>
+</div>
+
+<script src="/js/app.js"></script>
+<script>
+document.getElementById('navbar').innerHTML = renderNavbar('home');
+document.getElementById('footer-wrap').innerHTML = renderFooter();
+
+// countdown timers
+function startTimer(hId, mId, sId, totalSecs) {
+  let t = totalSecs;
+  const tick = () => {
+    if (t < 0) t = totalSecs;
+    document.getElementById(hId).textContent = String(Math.floor(t/3600)).padStart(2,'0');
+    document.getElementById(mId).textContent = String(Math.floor((t%3600)/60)).padStart(2,'0');
+    document.getElementById(sId).textContent = String(t%60).padStart(2,'0');
+    t--; setTimeout(tick, 1000);
+  };
+  tick();
+}
+startTimer('t-h','t-m','t-s', 8*3600+45*60+22);
+startTimer('f-h','f-m','f-s', 1*3600+22*60+47);
+
+async function loadHome() {
+  // Fetch artworks
+  const all = await apiFetch('/artworks?limit=12');
+  let wishSet = new Set();
+  if (Auth.isLoggedIn()) {
+    try { const w = await apiFetch('/wishlist'); w.forEach(i => wishSet.add(i.id)); } catch {}
+  }
+
+  // Deals - first 5
+  const deals = all.slice(0,5);
+  document.getElementById('deals-grid').innerHTML = deals.map(a => prodCard(a, wishSet)).join('');
+
+  // Flash sale - items 5-9 with high discounts
+  const flash = all.slice(5,10);
+  const flashSolds = [72,55,89,41,93];
+  document.getElementById('flash-grid').innerHTML = flash.map((a,i) => {
+    const disc = a.mrp > a.price ? Math.round((1-a.price/a.mrp)*100) : 20;
+    return `<div class="flash-item" onclick="window.location.href='/product?id=${a.id}'">
+      <div class="flash-img" style="background:linear-gradient(135deg,${a.image_color},${a.image_color2})"></div>
+      <div class="flash-off">${disc}% off</div>
+      <div class="flash-name">${a.title}</div>
+      <div class="flash-price">₹${Number(a.price).toLocaleString()}</div>
+      <div class="flash-mrp">₹${Number(a.mrp).toLocaleString()}</div>
+      <div class="bar-wrap"><div class="bar-fill" style="width:${flashSolds[i]}%"></div></div>
+      <div class="sold-txt">${flashSolds[i]}% sold</div>
+    </div>`;
+  }).join('');
+
+  // New arrivals - items 7-12
+  const news = all.slice(7,12);
+  document.getElementById('new-grid').innerHTML = news.map(a => prodCard(a, wishSet)).join('');
+
+  // Cart sticky bar
+  if (Auth.isLoggedIn()) {
+    const cart = await apiFetch('/cart');
+    if (cart.length > 0) {
+      const total = cart.reduce((s,i) => s + i.price*i.quantity, 0);
+      document.getElementById('cs-count').textContent = cart.reduce((s,i) => s+i.quantity, 0);
+      document.getElementById('cs-total').textContent = Number(total).toLocaleString();
+      document.getElementById('cart-sticky').style.display = 'flex';
+    }
+  }
+}
+loadHome().catch(console.error);
+</script>
+</body>
+</html>
