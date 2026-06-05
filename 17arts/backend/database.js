@@ -61,18 +61,77 @@ function initSchema() {
 
   // Seed artworks
   const arts = [
-    ['a1','Morning Raga','Meena Sharma','Traditional','Watercolour',25200,42000,'A serene depiction of dawn through classical Indian musical imagery. Painted with natural pigments on handmade paper.','24" x 18"','#C4A882','#8B6E4E',1,4.8,1240,'Bestseller'],
-    ['a2','Urban Drift No. 7','Arjun Pillai','Contemporary','Acrylic on Canvas',48000,68500,'A bold exploration of city movement and modern Indian life. Vibrant acrylic layers on stretched canvas.','36" x 24"','#7B9EA6','#3D6B76',1,4.6,883,'New'],
-    ['a3','Varanasi Ghat','Priya Nair','Heritage','Oil on Canvas',41250,55000,'Timeless ghats of Varanasi captured at golden hour. Rich oil textures evoke the spiritual essence of the city.','30" x 20"','#B5936B','#6B4423',1,4.9,2104,'Top Rated'],
-    ['a4','Chromatic Sutras','Vivek Rao','Abstract','Mixed Media',84000,120000,'A meditation on colour, form and ancient scripture. Layered mixed media on board with gold leaf accents.','48" x 36"','#9B8EC4','#5A4B99',1,4.7,562,''],
-    ['a5','Madhubani Garden','Sunita Devi','Folk','Natural Pigments',11700,18000,'Traditional Madhubani art from Bihar with intricate floral motifs and mythological narratives.','20" x 16"','#5DCAA5','#0F6E56',3,4.9,3467,'Folk'],
-    ['a6','Rajput Procession','Ramesh Jangid','Traditional','Watercolour on Paper',18500,26000,'A detailed miniature painting depicting a royal Rajput procession with exquisite fine brushwork.','18" x 12"','#D4A882','#9B5E3E',2,4.9,1872,'Top Pick'],
-    ['a7','Court of Akbar','Kavita Meena','Traditional','Gouache on Board',32000,45000,'A faithful recreation of Mughal court life, rendered in traditional gouache with fine gold detailing.','24" x 18"','#C4A060','#7B4020',1,4.7,943,''],
-    ['a8','Kerala Backwaters','Thomas Varghese','Contemporary','Oil on Canvas',22000,40000,'Atmospheric dusk over the Kerala backwaters. Soft palette knife work captures the still, golden light.','30" x 20"','#7B9EA6','#2D5C6B',1,4.6,671,'Sale'],
-    ['a9','Geometric Mandala III','Aditi Shah','Abstract','Acrylic on Canvas',8800,22000,'Precision geometric mandala drawn with ruler and compass, then filled with vibrant acrylics.','20" x 20"','#9B8EC4','#5A4B99',5,4.8,2310,'60% Off'],
-    ['a10','Phad Scroll Painting','Shanti Lal','Folk','Mineral Pigments',12800,16000,'A traditional Phad scroll from Rajasthan depicting the tale of Pabuji. Hand-painted on cotton cloth.','72" x 24"','#B5936B','#7B3A10',2,4.8,674,'Heritage'],
-    ['a11','Monsoon Blues','Riya Desai','Contemporary','Watercolour',15000,20000,'The first rains of monsoon captured in flowing watercolour washes. Evocative and atmospheric.','22" x 16"','#5A8EC4','#2D5B99',1,4.5,428,''],
-    ['a12','Warli Village Scene','Mangesh Warli','Folk','Natural Pigments on Cloth',6750,15000,'Authentic Warli tribal art from Maharashtra depicting daily village life and community celebrations.','18" x 18"','#8B7355','#5A4A30',4,4.9,1893,'Folk'],
+    ['a1','Morning Raga','Meena Sharma','Traditional','Watercolour',25200,42000,
+     'A serene depiction of dawn through classical Indian musical imagery.',
+     '24" x 18"',
+     'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=600&q=80',
+     '#C4A882','#8B6E4E',1,4.8,1240,'Bestseller'],
+
+    ['a2','Urban Drift No. 7','Arjun Pillai','Contemporary','Acrylic on Canvas',48000,68500,
+     'A bold exploration of city movement and modern Indian life.',
+     '36" x 24"',
+     'https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=600&q=80',
+     '#7B9EA6','#3D6B76',1,4.6,883,'New'],
+
+    ['a3','Varanasi Ghat','Priya Nair','Heritage','Oil on Canvas',41250,55000,
+     'Timeless ghats of Varanasi captured at golden hour.',
+     '30" x 20"',
+     'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80',
+     '#B5936B','#6B4423',1,4.9,2104,'Top Rated'],
+
+    ['a4','Chromatic Sutras','Vivek Rao','Abstract','Mixed Media',84000,120000,
+     'A meditation on colour, form and ancient scripture.',
+     '48" x 36"',
+     'https://images.unsplash.com/photo-1549490349-8643362247b5?w=600&q=80',
+     '#9B8EC4','#5A4B99',1,4.7,562,''],
+
+    ['a5','Madhubani Garden','Sunita Devi','Folk','Natural Pigments',11700,18000,
+     'Traditional Madhubani art from Bihar with intricate floral motifs.',
+     '20" x 16"',
+     'https://images.unsplash.com/photo-1578926375605-eaf7559b1458?w=600&q=80',
+     '#5DCAA5','#0F6E56',3,4.9,3467,'Folk'],
+
+    ['a6','Rajput Procession','Ramesh Jangid','Traditional','Watercolour on Paper',18500,26000,
+     'A detailed miniature painting depicting a royal Rajput procession.',
+     '18" x 12"',
+     'https://images.unsplash.com/photo-1582201942988-13e60e4556ee?w=600&q=80',
+     '#D4A882','#9B5E3E',2,4.9,1872,'Top Pick'],
+
+    ['a7','Court of Akbar','Kavita Meena','Traditional','Gouache on Board',32000,45000,
+     'A faithful recreation of Mughal court life with fine gold detailing.',
+     '24" x 18"',
+     'https://images.unsplash.com/photo-1596548438137-d51ea5c83ca5?w=600&q=80',
+     '#C4A060','#7B4020',1,4.7,943,''],
+
+    ['a8','Kerala Backwaters','Thomas Varghese','Contemporary','Oil on Canvas',22000,40000,
+     'Atmospheric dusk over the Kerala backwaters.',
+     '30" x 20"',
+     'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=600&q=80',
+     '#7B9EA6','#2D5C6B',1,4.6,671,'Sale'],
+
+    ['a9','Geometric Mandala III','Aditi Shah','Abstract','Acrylic on Canvas',8800,22000,
+     'Precision geometric mandala filled with vibrant acrylics.',
+     '20" x 20"',
+     'https://images.unsplash.com/photo-1615639164213-aab04da9b38e?w=600&q=80',
+     '#9B8EC4','#5A4B99',5,4.8,2310,'60% Off'],
+
+    ['a10','Phad Scroll Painting','Shanti Lal','Folk','Mineral Pigments',12800,16000,
+     'A traditional Phad scroll from Rajasthan. Hand-painted on cotton cloth.',
+     '72" x 24"',
+     'https://images.unsplash.com/photo-1571115177098-24ec42ed204d?w=600&q=80',
+     '#B5936B','#7B3A10',2,4.8,674,'Heritage'],
+
+    ['a11','Monsoon Blues','Riya Desai','Contemporary','Watercolour',15000,20000,
+     'The first rains of monsoon captured in flowing watercolour washes.',
+     '22" x 16"',
+     'https://images.unsplash.com/photo-1500462918059-b1a0cb512f1d?w=600&q=80',
+     '#5A8EC4','#2D5B99',1,4.5,428,''],
+
+    ['a12','Warli Village Scene','Mangesh Warli','Folk','Natural Pigments on Cloth',6750,15000,
+     'Authentic Warli tribal art from Maharashtra.',
+     '18" x 18"',
+     'https://images.unsplash.com/photo-1504198458649-3128b932f49e?w=600&q=80',
+     '#8B7355','#5A4A30',4,4.9,1893,'Folk'],
   ];
   const stmt = db.prepare('INSERT OR IGNORE INTO artworks (id,title,artist,category,medium,price,mrp,description,dimensions,image_color,image_color2,stock,rating,reviews,badge) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
   arts.forEach(a => stmt.run(a));
