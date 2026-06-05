@@ -24,10 +24,37 @@
   <div class="contact-info-card">
     <div style="font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--gold-l);font-weight:300;margin-bottom:6px">We'd love to hear from you</div>
     <div style="font-size:13px;color:rgba(255,255,255,0.4);margin-bottom:20px;line-height:1.6">Whether you have a question about an artwork, need help with an order, or want to sell on 17ARTS — we're here.</div>
-    <div class="contact-item"><div class="contact-icon"><i class="ti ti-phone" aria-hidden="true"></i></div><div><div style="font-size:13px;font-weight:600;margin-bottom:2px">Phone</div><div style="font-size:13px;color:rgba(255,255,255,0.5)">+91 9014422656</div><div style="font-size:11px;color:rgba(255,255,255,0.3);margin-top:2px">Mon–Sat, 10am–6pm IST</div></div></div>
-    <div class="contact-item"><div class="contact-icon"><i class="ti ti-mail" aria-hidden="true"></i></div><div><div style="font-size:13px;font-weight:600;margin-bottom:2px">Email</div><div style="font-size:13px;color:rgba(255,255,255,0.5)">support@17arts.in</div><div style="font-size:11px;color:rgba(255,255,255,0.3);margin-top:2px">Response within 24 hours</div></div></div>
-    <div class="contact-item"><div class="contact-icon"><i class="ti ti-map-pin" aria-hidden="true"></i></div><div><div style="font-size:13px;font-weight:600;margin-bottom:2px">Location</div><div style="font-size:13px;color:rgba(255,255,255,0.5)">Hyderabad, Telangana, India</div></div></div>
-    <div class="contact-item"><div class="contact-icon" style="background:#E8F9EE;color:#25D366"><i class="ti ti-brand-whatsapp" aria-hidden="true"></i></div><div><div style="font-size:13px;font-weight:600;margin-bottom:2px">WhatsApp</div><div style="font-size:13px;color:rgba(255,255,255,0.5)">+91 9014422656</div><div style="font-size:11px;color:rgba(255,255,255,0.3);margin-top:2px">Quick responses on WhatsApp</div></div></div>
+    <div class="contact-item">
+      <div class="contact-icon"><i class="ti ti-phone" aria-hidden="true"></i></div>
+      <div>
+        <div style="font-size:13px;font-weight:600;margin-bottom:2px">Phone</div>
+        <div style="font-size:13px;color:rgba(255,255,255,0.5)">+91 9014422656</div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.3);margin-top:2px">Mon–Sat, 10am–6pm IST</div>
+      </div>
+    </div>
+    <div class="contact-item">
+      <div class="contact-icon"><i class="ti ti-mail" aria-hidden="true"></i></div>
+      <div>
+        <div style="font-size:13px;font-weight:600;margin-bottom:2px">Email</div>
+        <div style="font-size:13px;color:rgba(255,255,255,0.5)">support@17arts.in</div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.3);margin-top:2px">Response within 24 hours</div>
+      </div>
+    </div>
+    <div class="contact-item">
+      <div class="contact-icon"><i class="ti ti-map-pin" aria-hidden="true"></i></div>
+      <div>
+        <div style="font-size:13px;font-weight:600;margin-bottom:2px">Location</div>
+        <div style="font-size:13px;color:rgba(255,255,255,0.5)">Guntur, Andhra Pradesh, India</div>
+      </div>
+    </div>
+    <div class="contact-item">
+      <div class="contact-icon" style="background:#E8F9EE;color:#25D366"><i class="ti ti-brand-whatsapp" aria-hidden="true"></i></div>
+      <div>
+        <div style="font-size:13px;font-weight:600;margin-bottom:2px">WhatsApp</div>
+        <div style="font-size:13px;color:rgba(255,255,255,0.5)">+91 9014422656</div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.3);margin-top:2px">Quick responses on WhatsApp</div>
+      </div>
+    </div>
   </div>
   <div class="contact-form-card">
     <div style="font-size:18px;font-weight:700;margin-bottom:20px">Send us a Message</div>
@@ -37,8 +64,18 @@
       <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" id="c-email" placeholder="you@example.com"></div>
     </div>
     <div class="form-group"><label class="form-label">Phone (optional)</label><input class="form-input" id="c-phone" placeholder="+91 9999999999"></div>
-    <div class="form-group"><label class="form-label">Subject</label><select class="form-select" id="c-subject"><option>General Enquiry</option><option>Order Support</option><option>Custom Commission</option><option>Sell on 17ARTS</option><option>Partnership</option></select></div>
-    <div class="form-group"><label class="form-label">Message</label><textarea class="form-input" id="c-message" rows="5" placeholder="Tell us how we can help you…" style="resize:vertical"></textarea></div>
+    <div class="form-group"><label class="form-label">Subject</label>
+      <select class="form-select" id="c-subject">
+        <option>General Enquiry</option>
+        <option>Order Support</option>
+        <option>Custom Commission</option>
+        <option>Sell on 17ARTS</option>
+        <option>Partnership</option>
+      </select>
+    </div>
+    <div class="form-group"><label class="form-label">Message</label>
+      <textarea class="form-input" id="c-message" rows="5" placeholder="Tell us how we can help you…" style="resize:vertical"></textarea>
+    </div>
     <button class="btn btn-primary btn-block" style="font-size:14px;padding:13px" onclick="submitContact()">
       <i class="ti ti-send" style="font-size:15px;vertical-align:-2px;margin-right:6px" aria-hidden="true"></i> Send Message
     </button>
