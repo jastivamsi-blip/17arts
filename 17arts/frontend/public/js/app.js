@@ -87,10 +87,20 @@ async function toggleWishlist(artwork_id, btn) {
 
 // ── ART THUMB ─────────────────────────────────────────────────
 function artThumb(a, size = 90) {
+  if (a.image_url && a.image_url.startsWith('http')) {
+    return `<div style="width:${size}px;height:${size}px;border-radius:6px;flex-shrink:0;overflow:hidden;background:linear-gradient(135deg,${a.image_color},${a.image_color2})">
+      <img src="${a.image_url}" alt="${a.title}" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none'">
+    </div>`;
+  }
   return `<div style="width:${size}px;height:${size}px;border-radius:6px;background:linear-gradient(135deg,${a.image_color},${a.image_color2});flex-shrink:0"></div>`;
 }
 
 function artThumbLg(a) {
+  if (a.image_url && a.image_url.startsWith('http')) {
+    return `<div style="width:100%;padding-bottom:100%;position:relative;border-radius:8px;overflow:hidden;background:linear-gradient(135deg,${a.image_color},${a.image_color2})">
+      <img src="${a.image_url}" alt="${a.title}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" onerror="this.style.display='none'">
+    </div>`;
+  }
   return `<div style="width:100%;padding-bottom:100%;position:relative;border-radius:8px;overflow:hidden"><div style="position:absolute;inset:0;background:linear-gradient(135deg,${a.image_color},${a.image_color2})"></div></div>`;
 }
 
@@ -98,10 +108,13 @@ function artThumbLg(a) {
 function prodCard(a, wishSet = new Set()) {
   const disc = a.mrp > a.price ? Math.round((1 - a.price / a.mrp) * 100) : 0;
   const liked = wishSet.has(a.id);
+  const imgHtml = a.image_url && a.image_url.startsWith('http')
+    ? `<img src="${a.image_url}" alt="${a.title}" style="width:90px;height:90px;border-radius:6px;object-fit:cover" onerror="this.style.display='none'">`
+    : `<div class="art-thumb" style="background:linear-gradient(135deg,${a.image_color},${a.image_color2})"></div>`;
   return `
   <div class="prod-card" onclick="window.location.href='/product?id=${a.id}'">
     <div class="prod-img">
-      <div class="art-thumb" style="background:linear-gradient(135deg,${a.image_color},${a.image_color2})"></div>
+      ${imgHtml}
       ${a.badge ? `<div class="prod-badge ${a.badge.includes('off')||a.badge==='Sale'?'badge-deal':a.badge==='New'?'badge-new':'badge-top'}">${a.badge}</div>` : ''}
       <button class="wish-btn ${liked ? 'liked' : ''}" onclick="event.stopPropagation();toggleWishlist('${a.id}',this)" aria-label="Wishlist">
         <i class="ti ti-heart" aria-hidden="true"></i>
@@ -198,7 +211,7 @@ function renderFooter() {
     <div class="footer-grid">
       <div class="footer-brand">
         <div class="ft">17ARTS</div>
-        <p>India's premier art marketplace. Connecting collectors with extraordinary artworks from celebrated Indian artists since 2020.<br><br>📞 +91 9014422656<br>✉ support@17arts.in<br>📍 Hyderabad, Telangana</p>
+        <p>India's premier art marketplace. Connecting collectors with extraordinary artworks from celebrated Indian artists since 2020.<br><br>📞 +91 9014422656<br>✉ support@17arts.in<br>📍 Guntur, Andhra Pradesh</p>
       </div>
       <div class="footer-col"><h4>Shop</h4>
         <a onclick="window.location.href='/collection?cat=Traditional'">Traditional Art</a>
@@ -223,7 +236,7 @@ function renderFooter() {
       </div>
     </div>
     <div class="footer-bottom">
-      <div class="footer-copy">© 2026 17ARTS. All rights reserved. Hyderabad, India.</div>
+      <div class="footer-copy">© 2026 17ARTS. All rights reserved. Guntur, Andhra Pradesh, India.</div>
       <div class="trust-row">
         <div class="trust-badge"><i class="ti ti-lock" style="font-size:11px" aria-hidden="true"></i> SSL Secured</div>
         <div class="trust-badge"><i class="ti ti-shield-check" style="font-size:11px" aria-hidden="true"></i> Authentic Art</div>
